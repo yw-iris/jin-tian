@@ -13,15 +13,15 @@
   --sans:'Noto Sans SC',system-ui,sans-serif;
   --display:'Cinzel',serif;
   --black:'UnifrakturMaguntia',serif;
-  --bg0:#05080f;
-  --bg1:#0a1224;
-  --ink:#e9eefb;
-  --dim:#9fb0d4;
-  --frost:#bcd6ff;
-  --warm:#ffd2a0;   /* 今天 */
-  --blue:#8fb6ff;   /* 明天 */
-  --silver:#d2dcef; /* 后天 */
-  --gold:#f1e6cd;
+  --bg0:#050607;
+  --bg1:#0c0e11;
+  --ink:#f2f2f2;
+  --dim:#9a9a9a;
+  --frost:#cfcfcf;
+  --warm:#ffffff;   /* 今天 白 */
+  --blue:#b8b8b8;   /* 明天 中灰 */
+  --silver:#e6e6e6; /* 后天 银灰 */
+  --gold:#dadada;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -35,9 +35,9 @@ a{color:inherit}
 /* ===== 开场：落雪中枯树生长 + 标题浮现 ===== */
 #intro{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;
   align-items:center;justify-content:center;text-align:center;overflow:hidden;cursor:pointer;
-  background:radial-gradient(120% 90% at 50% 38%,#0b1530 0%,#070c1c 55%,#04060e 100%)}
+  background:radial-gradient(120% 90% at 50% 38%,#15171b 0%,#0c0e11 55%,#050607 100%)}
 #intro.done{opacity:0;transition:opacity 1.1s ease;pointer-events:none}
-.intro-tree{width:min(46vmin,340px);height:min(50vmin,370px);filter:drop-shadow(0 0 26px rgba(120,170,255,.45))}
+.intro-tree{width:min(46vmin,340px);height:min(50vmin,370px);filter:drop-shadow(0 0 26px rgba(220,220,220,.35))}
 .intro-tree .br{fill:none;stroke:url(#bark);stroke-width:2.4;stroke-linecap:round;
   stroke-dasharray:520;stroke-dashoffset:520;animation:grow 1.9s cubic-bezier(.3,.7,.3,1) forwards}
 .intro-tree .br:nth-child(2){animation-delay:.18s}
@@ -47,12 +47,12 @@ a{color:inherit}
 .intro-tree .br:nth-child(6){animation-delay:.66s}
 .intro-tree .br:nth-child(7){animation-delay:.78s}
 .intro-tree .br:nth-child(8){animation-delay:.90s}
-.intro-tree .snowcap{fill:rgba(220,235,255,.9);opacity:0;animation:capin 1s ease 1.8s forwards}
+.intro-tree .snowcap{fill:rgba(238,238,238,.9);opacity:0;animation:capin 1s ease 1.8s forwards}
 @keyframes grow{to{stroke-dashoffset:0}}
 @keyframes capin{to{opacity:1}}
 .intro-title{margin-top:26px;font-family:var(--serif);font-weight:500;
   font-size:clamp(30px,7.4vw,68px);letter-spacing:.06em;color:var(--ink);
-  text-shadow:0 0 30px rgba(120,170,255,.5),0 0 64px rgba(60,110,220,.35);
+  text-shadow:0 0 30px rgba(220,220,220,.45),0 0 64px rgba(160,160,160,.3);
   opacity:0;transform:translateY(16px);animation:rise 1.3s ease 1.5s forwards}
 .intro-sub{margin-top:14px;font-family:var(--display);text-transform:uppercase;letter-spacing:.42em;
   font-size:clamp(12px,2.6vw,16px);color:var(--frost);opacity:0;
@@ -71,23 +71,23 @@ a{color:inherit}
 
 /* ===== Hub：半圆卡片轮盘 ===== */
 #hub{position:fixed;inset:0;z-index:300;display:none;pointer-events:none;
-  background:radial-gradient(120% 90% at 50% 60%,rgba(8,14,30,.86),rgba(4,7,16,.96))}
+  background:radial-gradient(120% 90% at 50% 60%,rgba(10,10,12,.86),rgba(4,4,6,.96))}
 #hub.open{display:block;pointer-events:auto}
 #hub .stage{position:absolute;inset:0}
 #hub .card{position:absolute;left:0;top:0;width:148px;height:196px;border-radius:10px;
-  overflow:hidden;border:1px solid rgba(170,200,255,.35);background:#0c1530;
-  box-shadow:0 18px 44px rgba(0,0,0,.55),inset 0 0 30px rgba(40,70,160,.25);
+  overflow:hidden;border:1px solid rgba(200,200,200,.3);background:#101113;
+  box-shadow:0 18px 44px rgba(0,0,0,.55),inset 0 0 30px rgba(120,120,120,.18);
   cursor:pointer;will-change:transform}
-#hub .card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,12,28,.2),rgba(6,12,28,.72))}
+#hub .card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,10,.2),rgba(4,4,6,.72))}
 #hub .card .tree{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:120px;height:120px;opacity:.5}
 #hub .card .enter{position:absolute;top:11px;left:0;right:0;text-align:center;font-family:var(--display);
-  font-size:9px;letter-spacing:.34em;color:#9fc0ff;opacity:0;text-transform:uppercase}
+  font-size:9px;letter-spacing:.34em;color:#cfcfcf;opacity:0;text-transform:uppercase}
 #hub .card .lab{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-family:var(--serif);
-  font-size:20px;letter-spacing:.16em;color:#eaf1ff;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+  font-size:20px;letter-spacing:.16em;color:#f2f2f2;text-shadow:0 2px 10px rgba(0,0,0,.8)}
 #hub .card .en{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:var(--display);
-  font-size:9px;letter-spacing:.3em;color:#8fb0e0;text-transform:uppercase}
+  font-size:9px;letter-spacing:.3em;color:#a8a8a8;text-transform:uppercase}
 #hub .card.front .enter{opacity:1}
-#hub .card.front{border-color:rgba(180,210,255,.8);box-shadow:0 22px 56px rgba(20,50,140,.5),inset 0 0 30px rgba(60,100,200,.35)}
+#hub .card.front{border-color:rgba(220,220,220,.8);box-shadow:0 22px 56px rgba(120,120,120,.4),inset 0 0 30px rgba(150,150,150,.3)}
 #hub .hub-tip{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--sans);
   font-size:12px;letter-spacing:.2em;color:var(--dim);opacity:.8;pointer-events:none}
 
@@ -98,11 +98,11 @@ a{color:inherit}
   transition:opacity .7s ease}
 .panel.active{opacity:1;pointer-events:auto}
 .panel-bg{position:absolute;inset:0;z-index:0;
-  background:radial-gradient(120% 90% at 50% 30%,#0e1834 0%,#0a1124 55%,#05080f 100%)}
+  background:radial-gradient(120% 90% at 50% 30%,#16181c 0%,#0e1013 55%,#050607 100%)}
 .panel-bg::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(5,9,22,.30),rgba(8,10,28,.55))}
+  background:linear-gradient(180deg,rgba(5,5,7,.30),rgba(8,8,10,.55))}
 .panel-bg .tree-deco{position:absolute;left:50%;bottom:-3vh;transform:translateX(-50%);
-  width:min(60vh,420px);height:min(64vh,450px);opacity:.16;filter:drop-shadow(0 0 20px rgba(120,170,255,.25))}
+  width:min(60vh,420px);height:min(64vh,450px);opacity:.16;filter:drop-shadow(0 0 20px rgba(220,220,220,.2))}
 .panel-inner{position:relative;z-index:2;max-width:680px;margin:0 auto}
 .panel-inner>*{opacity:0;transform:translateY(22px);
   transition:opacity .85s ease,transform 1s cubic-bezier(.16,1,.3,1)}
@@ -120,7 +120,7 @@ a{color:inherit}
   text-transform:uppercase;margin-bottom:22px}
 .ch-no{font-family:var(--display);font-size:12px;letter-spacing:.34em;color:var(--dim);opacity:.85;margin-bottom:14px}
 .title{font-family:var(--serif);font-weight:500;font-size:clamp(30px,6.4vw,58px);line-height:1.3;letter-spacing:.05em;
-  color:var(--ink);text-shadow:0 0 30px rgba(120,170,255,.4)}
+  color:var(--ink);text-shadow:0 0 30px rgba(220,220,220,.35)}
 .sub{font-family:var(--serif);font-weight:300;font-size:clamp(15px,3vw,19px);color:var(--frost);margin-top:18px;opacity:.92}
 .line{font-family:var(--serif);font-weight:300;font-size:clamp(17px,3.2vw,23px);line-height:1.95;margin:20px 0;letter-spacing:.03em}
 .lead{font-size:clamp(15px,2.5vw,17px);color:var(--dim);max-width:36em;margin:18px auto;line-height:2}
@@ -128,13 +128,13 @@ a{color:inherit}
 .accent-warm .sub,.accent-warm .line{color:var(--warm)}
 .accent-blue .sub,.accent-blue .line{color:var(--blue)}
 .accent-silver .sub,.accent-silver .line{color:var(--silver)}
-.divider{width:60px;height:1px;margin:26px auto;background:linear-gradient(90deg,transparent,rgba(190,215,255,.7),transparent)}
+.divider{width:60px;height:1px;margin:26px auto;background:linear-gradient(90deg,transparent,rgba(200,200,200,.6),transparent)}
 .tags{display:flex;flex-wrap:wrap;gap:12px 14px;justify-content:center;margin-top:24px}
-.tag{border:1px solid rgba(190,215,255,.28);border-radius:3px;padding:8px 18px;font-size:15px;letter-spacing:.1em;font-family:var(--serif)}
+.tag{border:1px solid rgba(200,200,200,.25);border-radius:3px;padding:8px 18px;font-size:15px;letter-spacing:.1em;font-family:var(--serif)}
 .credit{margin-top:30px;font-family:var(--sans);font-size:13px;letter-spacing:.1em;color:var(--dim);opacity:.8}
 .back{position:fixed;top:18px;left:18px;z-index:4;font-family:var(--display);letter-spacing:.24em;font-size:12px;
-  color:var(--ink);opacity:.55;cursor:pointer;pointer-events:auto;display:none;border:1px solid rgba(190,215,255,.25);
-  padding:7px 14px;border-radius:30px;background:rgba(10,18,40,.5);backdrop-filter:blur(4px)}
+  color:var(--ink);opacity:.55;cursor:pointer;pointer-events:auto;display:none;border:1px solid rgba(200,200,200,.22);
+  padding:7px 14px;border-radius:30px;background:rgba(20,20,22,.5);backdrop-filter:blur(4px)}
 .back.show{display:block}
 @media(prefers-reduced-motion:reduce){
   .panel-inner>*{opacity:1!important;transform:none!important;transition:none!important}
@@ -147,9 +147,9 @@ a{color:inherit}
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
   <defs>
     <linearGradient id="bark" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0%" stop-color="#4a6bb0"/>
-      <stop offset="55%" stop-color="#9fc0ff"/>
-      <stop offset="100%" stop-color="#e6f0ff"/>
+      <stop offset="0%" stop-color="#3a3a3a"/>
+      <stop offset="55%" stop-color="#9a9a9a"/>
+      <stop offset="100%" stop-color="#ededed"/>
     </linearGradient>
     <symbol id="tree" viewBox="0 0 200 240">
       <g fill="none" stroke="url(#bark)" stroke-width="3" stroke-linecap="round">
@@ -297,10 +297,10 @@ a{color:inherit}
     ctx.save();ctx.translate(f.x,f.y);
     const a=0.55+0.45*Math.sin(f.ph);
     if(f.star){
-      ctx.rotate(f.ph*0.5);ctx.strokeStyle='rgba(226,238,255,'+(a*0.85).toFixed(3)+')';ctx.lineWidth=1;
+      ctx.rotate(f.ph*0.5);ctx.strokeStyle='rgba(235,235,235,'+(a*0.85).toFixed(3)+')';ctx.lineWidth=1;
       for(let k=0;k<6;k++){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-f.r*2.4);ctx.stroke();ctx.rotate(Math.PI/3);}
     }else{
-      ctx.fillStyle='rgba(232,242,255,'+a.toFixed(3)+')';
+      ctx.fillStyle='rgba(238,238,238,'+a.toFixed(3)+')';
       ctx.beginPath();ctx.arc(0,0,f.r,0,7);ctx.fill();
     }
     ctx.restore();
@@ -402,7 +402,7 @@ a{color:inherit}
       c.style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-chh/2).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
       c.style.opacity=op.toFixed(3);
       c.style.zIndex=Math.round(s*100)+100;
-      c.style.filter=onArc?(s>0.9?'none':'saturate(.85) brightness(.92)'):'none';
+      c.style.filter=onArc?(s>0.9?'none':'brightness(.92)'):'none';
       c.classList.remove('front');
       const d=Math.abs(a-Math.PI/2);
       if(onArc&&d<frontD){frontD=d;frontI=i;}
