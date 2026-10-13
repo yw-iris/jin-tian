@@ -361,14 +361,14 @@ a{color:inherit}
   deck.addEventListener('pointerup',e=>{
     const dx=e.clientX-pX,dy=e.clientY-pY,dt=Date.now()-pT;
     if(Math.hypot(dx,dy)<14&&dt<600&&!isUI(e.target)){
-      if(cur2===0)openHub();else show(cur2+1);
+      if(fromHub)returnToHub();else show(cur2+1);
     }
   },{passive:true});
-  back.addEventListener('click',openHub);
+  back.addEventListener('click',returnToHub);
 
   /* ===== Hub：半圆卡片轮盘 ===== */
   const stage=hub.querySelector('.stage');
-  let hubOpen=false,rot=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false,built=false;
+  let hubOpen=false,fromHub=false,rot=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false,built=false;
   const HUB_ROT=0.14;
   function buildHub(){
     CHAPTERS.forEach((p,i)=>{
@@ -417,15 +417,16 @@ a{color:inherit}
   }
   function openHub(){
     if(!built)buildHub();
-    hubOpen=true;hub.classList.add('open');
+    hubOpen=true;fromHub=false;hub.classList.add('open');back.classList.remove('show');
     if(!hubRAF){lastT=0;hubRAF=requestAnimationFrame(renderHub);}
   }
+  function returnToHub(){ fromHub=false; openHub(); }
   function enterHub(i){
     if(!hubOpen)return;
     if(i===undefined)i=curFront;
     hubOpen=false;hub.classList.remove('open');
     if(hubRAF){cancelAnimationFrame(hubRAF);hubRAF=null;}
-    show(i);
+    show(i); fromHub=true;
   }
 
   /* ===== 开场 ===== */
