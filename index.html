@@ -93,7 +93,7 @@ a{color:inherit}
 
 /* ===== Deck：全屏逐屏 ===== */
 #deck{position:fixed;inset:0;z-index:2}
-.panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+.panel{position:absolute;inset:0;display:flex;align-items:safe center;justify-content:safe center;
   text-align:center;padding:7vh 22px;overflow:auto;opacity:0;pointer-events:none;
   transition:opacity .7s ease}
 .panel.active{opacity:1;pointer-events:auto}
@@ -115,6 +115,9 @@ a{color:inherit}
 .panel.active .panel-inner>*:nth-child(6){transition-delay:.46s}
 .panel.active .panel-inner>*:nth-child(7){transition-delay:.54s}
 .panel.active .panel-inner>*:nth-child(8){transition-delay:.62s}
+.panel.active .panel-inner>*:nth-child(9){transition-delay:.70s}
+.panel.active .panel-inner>*:nth-child(10){transition-delay:.78s}
+.panel.active .panel-inner>*:nth-child(11){transition-delay:.86s}
 
 .eyebrow{font-family:var(--display);letter-spacing:.4em;font-size:11px;color:var(--dim);
   text-transform:uppercase;margin-bottom:22px}
@@ -131,6 +134,9 @@ a{color:inherit}
 .divider{width:60px;height:1px;margin:26px auto;background:linear-gradient(90deg,transparent,rgba(200,200,200,.6),transparent)}
 .tags{display:flex;flex-wrap:wrap;gap:12px 14px;justify-content:center;margin-top:24px}
 .tag{border:1px solid rgba(200,200,200,.25);border-radius:3px;padding:8px 18px;font-size:15px;letter-spacing:.1em;font-family:var(--serif)}
+.notice{max-width:40em;margin:18px auto 0;padding-left:1.3em;line-height:2;color:var(--frost);
+  font-family:var(--serif);font-weight:300;font-size:clamp(14px,2.4vw,16px);text-align:left}
+.notice li{margin:10px 0;list-style:decimal}
 .credit{margin-top:30px;font-family:var(--sans);font-size:13px;letter-spacing:.1em;color:var(--dim);opacity:.8}
 .back{position:fixed;top:18px;left:18px;z-index:4;font-family:var(--display);letter-spacing:.24em;font-size:12px;
   color:var(--ink);opacity:.55;cursor:pointer;pointer-events:auto;display:none;border:1px solid rgba(200,200,200,.22);
@@ -196,81 +202,82 @@ a{color:inherit}
   <section class="panel" id="cover">
     <div class="panel-bg"><svg class="tree-deco" viewBox="0 0 200 240"><use href="#tree"/></svg></div>
     <div class="panel-inner">
-      <div class="eyebrow">Three Days · 三天</div>
-      <h1 class="title">今天 · 明天 · 后天</h1>
+      <div class="eyebrow">Document · 文档</div>
+      <h1 class="title">今天 · 明天 · 后天<br>有什么区别</h1>
       <div class="divider"></div>
-      <p class="sub">—— 有什么区别</p>
-      <p class="lead">我们总在回望过往、期盼未来，也常纠结：<br>今天、明天、后天，到底有什么不同？</p>
-      <p class="credit">轻点任意处 · 进入下一屏 ›</p>
+      <p class="sub">瘾症 · by ivy</p>
+      <p class="lead">我们是漂泊的雪<br>脸颊的泪 和温热的心脏</p>
+      <p class="credit">轻点任意处 · 进入选择 ›</p>
     </div>
   </section>
 
-  <!-- 1 序 -->
-  <section class="panel" id="pre">
+  <!-- 1 瘾症 -->
+  <section class="panel accent-warm" id="yinzheng">
     <div class="panel-bg"></div>
     <div class="panel-inner">
-      <div class="ch-no">// 01 · 序</div>
-      <div class="eyebrow">Preface</div>
-      <h2 class="title" style="font-size:clamp(26px,5.4vw,46px)">时间的三种时态</h2>
+      <div class="ch-no">// 01 · 瘾症</div>
+      <div class="eyebrow">Persona · 人设</div>
+      <h2 class="title" style="font-size:clamp(28px,5.8vw,52px)">瘾症</h2>
       <div class="divider"></div>
-      <p class="line">这看似简单，却藏着生活的节奏。</p>
-      <p class="lead">有人把希望寄托于明日，有人把圆满留给后天，<br>而真正能落笔的，永远是今天这一页。</p>
+      <p class="script">我们是漂泊的雪<br>脸颊的泪 和温热的心脏</p>
+      <div class="tags">
+        <span class="tag">女｜18｜le-t｜双鱼｜INFP</span>
+        <span class="tag">常驻 耳正｜耳虚</span>
+      </div>
+      <p class="line" style="margin-top:20px">主风格</p>
+      <div class="tags">
+        <span class="tag">小狗文学 · 主</span>
+        <span class="tag">低无贬低</span>
+        <span class="tag">dom</span>
+      </div>
+      <p class="line" style="margin-top:20px">副风格</p>
+      <div class="tags">
+        <span class="tag">上位诱导</span>
+        <span class="tag">恶趣味</span>
+        <span class="tag">高擦</span>
+      </div>
+      <p class="script" style="margin-top:26px">你向前走吧<br>我想留在有你的昨天</p>
     </div>
   </section>
 
-  <!-- 2 今天 -->
-  <section class="panel accent-warm" id="today">
+  <!-- 2 须知 -->
+  <section class="panel accent-blue" id="xuzhi">
     <div class="panel-bg"></div>
-    <div class="panel-inner">
-      <div class="ch-no">// 02 · 今天</div>
-      <div class="eyebrow">Today · 当下的力量</div>
-      <h2 class="title" style="font-size:clamp(28px,5.8vw,52px)">今天</h2>
+    <div class="panel-inner" style="text-align:left">
+      <div class="ch-no">// 02 · 须知</div>
+      <div class="eyebrow">Notice · 告知</div>
+      <h2 class="title" style="text-align:center;font-size:clamp(28px,5.8vw,52px)">须知</h2>
       <div class="divider"></div>
-      <p class="line">今天，是我们实实在在拥有的时刻。</p>
-      <p class="lead">它是生活的起点，也是实现一切的起点。心理学研究表明，专注于当下能显著提升幸福感——当你全身心投入今天，便更能感知细微的美好。</p>
-      <p class="script">今天用心完成的一件事，<br>那种踏实与满足无可替代。</p>
+      <ol class="notice">
+        <li>请在开始前说明您的喜好与雷点</li>
+        <li>否则在涉雷时不予退款</li>
+        <li>不接受任何非本人原因的投诉、差评</li>
+        <li>若感到不适，“到此为止吧”是我们的安全词</li>
+        <li>已知我的风格没有恋感</li>
+        <li>要求恋感我没有办法</li>
+        <li>如不满意：半小时 5 分钟内、一小时 10 分钟内换人</li>
+        <li>婉拒恶意卡点</li>
+        <li>其次不接男板；不接男板、不接加旁观的，还有单口</li>
+        <li>单内不要搞抽象，不要发一些莫名其妙的话（我会默认转成普单）</li>
+        <li>以上是告知</li>
+        <li>我给你的权力保护了你的财产，也让你知道是否适合自己；同样我也有权力为自己考虑</li>
+        <li>重复一遍：不要单内搞抽象、不要不说话、不要一直问我一些莫名其妙的话语</li>
+      </ol>
+      <p class="script" style="text-align:center;margin-top:22px">以上归属权为瘾症</p>
     </div>
   </section>
 
-  <!-- 3 明天 -->
-  <section class="panel accent-blue" id="tomorrow">
-    <div class="panel-bg"></div>
-    <div class="panel-inner">
-      <div class="ch-no">// 03 · 明天</div>
-      <div class="eyebrow">Tomorrow · 希望的曙光</div>
-      <h2 class="title" style="font-size:clamp(28px,5.8vw,52px)">明天</h2>
-      <div class="divider"></div>
-      <p class="line">明天，代表未来与希望。</p>
-      <p class="lead">它是我们憧憬的方向，是努力的目标。有希望对明天的人，往往更有动力——明天像一盏灯，照亮前行的路。我们为它制定计划、设定目标，这些期许，正激励着今天的拼搏。</p>
-      <p class="script">明天虽未到来，<br>却承载着前行的信心。</p>
-    </div>
-  </section>
-
-  <!-- 4 后天 -->
-  <section class="panel accent-silver" id="dayafter">
-    <div class="panel-bg"></div>
-    <div class="panel-inner">
-      <div class="ch-no">// 04 · 后天</div>
-      <div class="eyebrow">The Day After · 长远的规划</div>
-      <h2 class="title" style="font-size:clamp(28px,5.8vw,52px)">后天</h2>
-      <div class="divider"></div>
-      <p class="line">后天，是更长远的未来。</p>
-      <p class="lead">它提醒我们要有长远的眼光与规划。经济学家指出，合理的长期规划能让我们更从容地应对不确定——为后天的安稳而储蓄、为长远而积累，短期的努力，终会在后天拉开差距。</p>
-      <p class="script">别只算眼前账，<br>也要看长远账。</p>
-    </div>
-  </section>
-
-  <!-- 5 尾声 -->
-  <section class="panel" id="ending">
+  <!-- 3 尾声 -->
+  <section class="panel accent-silver" id="ending">
     <div class="panel-bg"><svg class="tree-deco" viewBox="0 0 200 240"><use href="#tree"/></svg></div>
     <div class="panel-inner">
-      <div class="ch-no">// 05 · 尾声</div>
+      <div class="ch-no">// 03 · END</div>
       <div class="eyebrow">Ending</div>
-      <h2 class="title" style="font-size:clamp(26px,5.4vw,46px)">缺一不可</h2>
+      <h2 class="title" style="font-size:clamp(26px,5.4vw,46px)">END</h2>
       <div class="divider"></div>
-      <p class="line">今天、明天、后天，都很重要。</p>
-      <p class="lead">今天是基础，明天是动力，后天是方向。珍惜今天，怀揣明天的希望，规划后天的蓝图——在每一个当下全力以赴，未来自会回报。</p>
-      <p class="credit">制作 · yw-iris</p>
+      <p class="script">得到一切就忘记你<br>得到你就忘记一切</p>
+      <p class="line" style="font-style:italic;letter-spacing:.04em;opacity:.9">We hope to be carefree and come first.</p>
+      <p class="credit">瘾症 · by ivy</p>
     </div>
   </section>
 
@@ -320,11 +327,9 @@ a{color:inherit}
   /* ===== 章节 ===== */
   const CHAPTERS=[
     {id:'cover',zh:'封面',en:'COVER'},
-    {id:'pre',zh:'序',en:'PREFACE'},
-    {id:'today',zh:'今天',en:'TODAY'},
-    {id:'tomorrow',zh:'明天',en:'TOMORROW'},
-    {id:'dayafter',zh:'后天',en:'AFTER'},
-    {id:'ending',zh:'尾声',en:'ENDING'}
+    {id:'yinzheng',zh:'瘾症',en:'PERSONA'},
+    {id:'xuzhi',zh:'须知',en:'NOTICE'},
+    {id:'ending',zh:'尾声',en:'END'}
   ];
 
   /* ===== Deck：全屏逐屏 ===== */
