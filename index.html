@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>今天 · 明天 · 后天 — 有什么区别</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500&family=Cinzel:wght@400;600&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+:root{
+  --serif:'Noto Serif SC',serif;
+  --sans:'Noto Sans SC',system-ui,sans-serif;
+  --display:'Cinzel',serif;
+  --black:'UnifrakturMaguntia',serif;
+  --bg0:#05080f;
+  --bg1:#0a1224;
+  --ink:#e9eefb;
+  --dim:#9fb0d4;
+  --frost:#bcd6ff;
+  --warm:#ffd2a0;   /* 今天 */
+  --blue:#8fb6ff;   /* 明天 */
+  --silver:#d2dcef; /* 后天 */
+  --gold:#f1e6cd;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg0);overflow:hidden;
+  -webkit-font-smoothing:antialiased;line-height:2;letter-spacing:.02em}
+a{color:inherit}
+
+/* ===== 全局落雪 ===== */
+#snow{position:fixed;inset:0;z-index:150;pointer-events:none}
+
+/* ===== 开场：落雪中枯树生长 + 标题浮现 ===== */
+#intro{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;overflow:hidden;cursor:pointer;
+  background:radial-gradient(120% 90% at 50% 38%,#0b1530 0%,#070c1c 55%,#04060e 100%)}
+#intro.done{opacity:0;transition:opacity 1.1s ease;pointer-events:none}
+.intro-tree{width:min(46vmin,340px);height:min(50vmin,370px);filter:drop-shadow(0 0 26px rgba(120,170,255,.45))}
+.intro-tree .br{fill:none;stroke:url(#bark);stroke-width:2.4;stroke-linecap:round;
+  stroke-dasharray:520;stroke-dashoffset:520;animation:grow 1.9s cubic-bezier(.3,.7,.3,1) forwards}
+.intro-tree .br:nth-child(2){animation-delay:.18s}
+.intro-tree .br:nth-child(3){animation-delay:.30s}
+.intro-tree .br:nth-child(4){animation-delay:.42s}
+.intro-tree .br:nth-child(5){animation-delay:.54s}
+.intro-tree .br:nth-child(6){animation-delay:.66s}
+.intro-tree .br:nth-child(7){animation-delay:.78s}
+.intro-tree .br:nth-child(8){animation-delay:.90s}
+.intro-tree .snowcap{fill:rgba(220,235,255,.9);opacity:0;animation:capin 1s ease 1.8s forwards}
+@keyframes grow{to{stroke-dashoffset:0}}
+@keyframes capin{to{opacity:1}}
+.intro-title{margin-top:26px;font-family:var(--serif);font-weight:500;
+  font-size:clamp(30px,7.4vw,68px);letter-spacing:.06em;color:var(--ink);
+  text-shadow:0 0 30px rgba(120,170,255,.5),0 0 64px rgba(60,110,220,.35);
+  opacity:0;transform:translateY(16px);animation:rise 1.3s ease 1.5s forwards}
+.intro-sub{margin-top:14px;font-family:var(--display);text-transform:uppercase;letter-spacing:.42em;
+  font-size:clamp(12px,2.6vw,16px);color:var(--frost);opacity:0;
+  filter:blur(8px);animation:subclear 1.4s ease 2.2s forwards}
+.intro-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  font-family:var(--display);letter-spacing:.34em;font-size:11px;color:var(--dim);opacity:0;
+  text-transform:uppercase;animation:hintfade 2.6s ease-in-out 2.8s infinite}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes subclear{to{opacity:.7;filter:blur(0)}}
+@keyframes hintfade{0%,100%{opacity:.2}50%{opacity:.6}}
+@media(prefers-reduced-motion:reduce){
+  .intro-tree .br{stroke-dashoffset:0;animation:none}
+  .intro-tree .snowcap,.intro-title,.intro-sub{opacity:1;transform:none;filter:none;animation:none}
+  .intro-hint{opacity:.5;animation:none}
+}
+
+/* ===== Hub：半圆卡片轮盘 ===== */
+#hub{position:fixed;inset:0;z-index:300;display:none;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 60%,rgba(8,14,30,.86),rgba(4,7,16,.96))}
+#hub.open{display:block;pointer-events:auto}
+#hub .stage{position:absolute;inset:0}
+#hub .card{position:absolute;left:0;top:0;width:148px;height:196px;border-radius:10px;
+  overflow:hidden;border:1px solid rgba(170,200,255,.35);background:#0c1530;
+  box-shadow:0 18px 44px rgba(0,0,0,.55),inset 0 0 30px rgba(40,70,160,.25);
+  cursor:pointer;will-change:transform}
+#hub .card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,12,28,.2),rgba(6,12,28,.72))}
+#hub .card .tree{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:120px;height:120px;opacity:.5}
+#hub .card .enter{position:absolute;top:11px;left:0;right:0;text-align:center;font-family:var(--display);
+  font-size:9px;letter-spacing:.34em;color:#9fc0ff;opacity:0;text-transform:uppercase}
+#hub .card .lab{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-family:var(--serif);
+  font-size:20px;letter-spacing:.16em;color:#eaf1ff;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+#hub .card .en{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:var(--display);
+  font-size:9px;letter-spacing:.3em;color:#8fb0e0;text-transform:uppercase}
+#hub .card.front .enter{opacity:1}
+#hub .card.front{border-color:rgba(180,210,255,.8);box-shadow:0 22px 56px rgba(20,50,140,.5),inset 0 0 30px rgba(60,100,200,.35)}
+#hub .hub-tip{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--sans);
+  font-size:12px;letter-spacing:.2em;color:var(--dim);opacity:.8;pointer-events:none}
+
+/* ===== Deck：全屏逐屏 ===== */
+#deck{position:fixed;inset:0;z-index:2}
+.panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:7vh 22px;overflow:auto;opacity:0;pointer-events:none;
+  transition:opacity .7s ease}
+.panel.active{opacity:1;pointer-events:auto}
+.panel-bg{position:absolute;inset:0;z-index:0;
+  background:radial-gradient(120% 90% at 50% 30%,#0e1834 0%,#0a1124 55%,#05080f 100%)}
+.panel-bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(5,9,22,.30),rgba(8,10,28,.55))}
+.panel-bg .tree-deco{position:absolute;left:50%;bottom:-3vh;transform:translateX(-50%);
+  width:min(60vh,420px);height:min(64vh,450px);opacity:.16;filter:drop-shadow(0 0 20px rgba(120,170,255,.25))}
+.panel-inner{position:relative;z-index:2;max-width:680px;margin:0 auto}
+.panel-inner>*{opacity:0;transform:translateY(22px);
+  transition:opacity .85s ease,transform 1s cubic-bezier(.16,1,.3,1)}
+.panel.active .panel-inner>*{opacity:1;transform:none}
+.panel.active .panel-inner>*:nth-child(1){transition-delay:.06s}
+.panel.active .panel-inner>*:nth-child(2){transition-delay:.14s}
+.panel.active .panel-inner>*:nth-child(3){transition-delay:.22s}
+.panel.active .panel-inner>*:nth-child(4){transition-delay:.30s}
+.panel.active .panel-inner>*:nth-child(5){transition-delay:.38s}
+.panel.active .panel-inner>*:nth-child(6){transition-delay:.46s}
+.panel.active .panel-inner>*:nth-child(7){transition-delay:.54s}
+.panel.active .panel-inner>*:nth-child(8){transition-delay:.62s}
+
+.eyebrow{font-family:var(--display);letter-spacing:.4em;font-size:11px;color:var(--dim);
+  text-transform:uppercase;margin-bottom:22px}
+.ch-no{font-family:var(--display);font-size:12px;letter-spacing:.34em;color:var(--dim);opacity:.85;margin-bottom:14px}
+.title{font-family:var(--serif);font-weight:500;font-size:clamp(30px,6.4vw,58px);line-height:1.3;letter-spacing:.05em;
+  color:var(--ink);text-shadow:0 0 30px rgba(120,170,255,.4)}
+.sub{font-family:var(--serif);font-weight:300;font-size:clamp(15px,3vw,19px);color:var(--frost);margin-top:18px;opacity:.92}
+.line{font-family:var(--serif);font-weight:300;font-size:clamp(17px,3.2vw,23px);line-height:1.95;margin:20px 0;letter-spacing:.03em}
+.lead{font-size:clamp(15px,2.5vw,17px);color:var(--dim);max-width:36em;margin:18px auto;line-height:2}
+.script{font-family:var(--serif);font-weight:300;font-size:clamp(18px,3.4vw,26px);line-height:1.6;margin:22px 0;opacity:.92}
+.accent-warm .sub,.accent-warm .line{color:var(--warm)}
+.accent-blue .sub,.accent-blue .line{color:var(--blue)}
+.accent-silver .sub,.accent-silver .line{color:var(--silver)}
+.divider{width:60px;height:1px;margin:26px auto;background:linear-gradient(90deg,transparent,rgba(190,215,255,.7),transparent)}
+.tags{display:flex;flex-wrap:wrap;gap:12px 14px;justify-content:center;margin-top:24px}
+.tag{border:1px solid rgba(190,215,255,.28);border-radius:3px;padding:8px 18px;font-size:15px;letter-spacing:.1em;font-family:var(--serif)}
+.credit{margin-top:30px;font-family:var(--sans);font-size:13px;letter-spacing:.1em;color:var(--dim);opacity:.8}
+.back{position:fixed;top:18px;left:18px;z-index:4;font-family:var(--display);letter-spacing:.24em;font-size:12px;
+  color:var(--ink);opacity:.55;cursor:pointer;pointer-events:auto;display:none;border:1px solid rgba(190,215,255,.25);
+  padding:7px 14px;border-radius:30px;background:rgba(10,18,40,.5);backdrop-filter:blur(4px)}
+.back.show{display:block}
+@media(prefers-reduced-motion:reduce){
+  .panel-inner>*{opacity:1!important;transform:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- 复用树形 SVG -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <linearGradient id="bark" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#4a6bb0"/>
+      <stop offset="55%" stop-color="#9fc0ff"/>
+      <stop offset="100%" stop-color="#e6f0ff"/>
+    </linearGradient>
+    <symbol id="tree" viewBox="0 0 200 240">
+      <g fill="none" stroke="url(#bark)" stroke-width="3" stroke-linecap="round">
+        <path class="br" d="M100 238 L100 150"/>
+        <path class="br" d="M100 186 C92 162 74 150 56 142"/>
+        <path class="br" d="M100 186 C108 162 126 150 144 142"/>
+        <path class="br" d="M100 158 C94 134 80 122 66 114"/>
+        <path class="br" d="M100 158 C106 134 120 122 134 114"/>
+        <path class="br" d="M100 150 C100 122 100 102 100 78"/>
+        <path class="br" d="M100 128 C86 110 76 96 70 80"/>
+        <path class="br" d="M100 128 C114 110 124 96 130 80"/>
+        <path class="br" d="M100 96 C100 78 100 64 100 50"/>
+      </g>
+      <g class="snowcap">
+        <circle cx="56" cy="140" r="4"/><circle cx="144" cy="140" r="4"/>
+        <circle cx="66" cy="112" r="3.4"/><circle cx="134" cy="112" r="3.4"/>
+        <circle cx="100" cy="48" r="4"/><circle cx="70" cy="78" r="3"/>
+        <circle cx="130" cy="78" r="3"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<canvas id="snow"></canvas>
+
+<!-- 开场 -->
+<div id="intro">
+  <svg class="intro-tree" viewBox="0 0 200 240"><use href="#tree"/></svg>
+  <div class="intro-title">今天 · 明天 · 后天</div>
+  <div class="intro-sub">What sets them apart</div>
+  <div class="intro-hint">轻触任意处 · 进入</div>
+</div>
+
+<!-- Hub 卡片轮盘 -->
+<div id="hub">
+  <div class="stage"></div>
+  <div class="hub-tip">滑动 / 滚轮 转动 · 轻点卡片进入</div>
+</div>
+
+<!-- Deck 逐屏 -->
+<div id="deck">
+
+  <!-- 0 封面 -->
+  <section class="panel" id="cover">
+    <div class="panel-bg"><svg class="tree-deco" viewBox="0 0 200 240"><use href="#tree"/></svg></div>
+    <div class="panel-inner">
+      <div class="eyebrow">Three Days · 三天</div>
+      <h1 class="title">今天 · 明天 · 后天</h1>
+      <div class="divider"></div>
+      <p class="sub">—— 有什么区别</p>
+      <p class="lead">我们总在回望过往、期盼未来，也常纠结：<br>今天、明天、后天，到底有什么不同？</p>
+      <p class="credit">轻点任意处 · 进入下一屏 ›</p>
+    </div>
+  </section>
+
+  <!-- 1 序 -->
+  <section class="panel" id="pre">
+    <div class="panel-bg"></div>
+    <div class="panel-inner">
+      <div class="ch-no">// 01 · 序</div>
+      <div class="eyebrow">Preface</div>
+      <h2 class="title" style="font-size:clamp(26px,5.4vw,46px)">时间的三种时态</h2>
+      <div class="divider"></div>
+      <p class="line">这看似简单，却藏着生活的节奏。</p>
+      <p class="lead">有人把希望寄托于明日，有人把圆满留给后天，<br>而真正能落笔的，永远是今天这一页。</p>
+    </div>
+  </section>
+
+  <!-- 2 今天 -->
+  <section class="panel accent-warm" id="today">
+    <div class="panel-bg"></div>
+    <div class="panel-inner">
+      <div class="ch-no">// 02 · 今天</div>
+      <div class="eyebrow">Today · 当下的力量</div>
+      <h2 class="title" style="font-size:clamp(28px,5.8vw,52px)">今天</h2>
+      <div class="divider"></div>
+      <p class="line">今天，是我们实实在在拥有的时刻。</p>
+      <p class="lead">它是生活的起点，也是实现一切的起点。心理学研究表明，专注于当下能显著提升幸福感——当你全身心投入今天，便更能感知细微的美好。</p>
+      <p class="script">今天用心完成的一件事，<br>那种踏实与满足无可替代。</p>
+    </div>
+  </section>
+
+  <!-- 3 明天 -->
+  <section class="panel accent-blue" id="tomorrow">
+    <div class="panel-bg"></div>
+    <div class="panel-inner">
+      <div class="ch-no">// 03 · 明天</div>
+      <div class="eyebrow">Tomorrow · 希望的曙光</div>
+      <h2 class="title" style="font-size:clamp(28px,5.8vw,52px)">明天</h2>
+      <div class="divider"></div>
+      <p class="line">明天，代表未来与希望。</p>
+      <p class="lead">它是我们憧憬的方向，是努力的目标。有希望对明天的人，往往更有动力——明天像一盏灯，照亮前行的路。我们为它制定计划、设定目标，这些期许，正激励着今天的拼搏。</p>
+      <p class="script">明天虽未到来，<br>却承载着前行的信心。</p>
+    </div>
+  </section>
+
+  <!-- 4 后天 -->
+  <section class="panel accent-silver" id="dayafter">
+    <div class="panel-bg"></div>
+    <div class="panel-inner">
+      <div class="ch-no">// 04 · 后天</div>
+      <div class="eyebrow">The Day After · 长远的规划</div>
+      <h2 class="title" style="font-size:clamp(28px,5.8vw,52px)">后天</h2>
+      <div class="divider"></div>
+      <p class="line">后天，是更长远的未来。</p>
+      <p class="lead">它提醒我们要有长远的眼光与规划。经济学家指出，合理的长期规划能让我们更从容地应对不确定——为后天的安稳而储蓄、为长远而积累，短期的努力，终会在后天拉开差距。</p>
+      <p class="script">别只算眼前账，<br>也要看长远账。</p>
+    </div>
+  </section>
+
+  <!-- 5 尾声 -->
+  <section class="panel" id="ending">
+    <div class="panel-bg"><svg class="tree-deco" viewBox="0 0 200 240"><use href="#tree"/></svg></div>
+    <div class="panel-inner">
+      <div class="ch-no">// 05 · 尾声</div>
+      <div class="eyebrow">Ending</div>
+      <h2 class="title" style="font-size:clamp(26px,5.4vw,46px)">缺一不可</h2>
+      <div class="divider"></div>
+      <p class="line">今天、明天、后天，都很重要。</p>
+      <p class="lead">今天是基础，明天是动力，后天是方向。珍惜今天，怀揣明天的希望，规划后天的蓝图——在每一个当下全力以赴，未来自会回报。</p>
+      <p class="credit">制作 · yw-iris</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="back" id="back">‹ 返回选择</div>
+
+<script>
+(function(){
+  'use strict';
+  const REDUCE=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ===== 全局落雪 ===== */
+  const cv=document.getElementById('snow'),ctx=cv.getContext('2d');
+  let W,H,flakes=[];
+  function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
+  resize();addEventListener('resize',resize);
+  function mkF(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.4+1.1,
+    vy:Math.random()*0.5+0.25,vx:(Math.random()-0.5)*0.3,ph:Math.random()*6.28,sw:Math.random()*0.02+0.008,
+    star:Math.random()<0.22};}
+  const NF=innerWidth<700?70:120;
+  for(let i=0;i<NF;i++)flakes.push(mkF());
+  function drawF(f){
+    ctx.save();ctx.translate(f.x,f.y);
+    const a=0.55+0.45*Math.sin(f.ph);
+    if(f.star){
+      ctx.rotate(f.ph*0.5);ctx.strokeStyle='rgba(226,238,255,'+(a*0.85).toFixed(3)+')';ctx.lineWidth=1;
+      for(let k=0;k<6;k++){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-f.r*2.4);ctx.stroke();ctx.rotate(Math.PI/3);}
+    }else{
+      ctx.fillStyle='rgba(232,242,255,'+a.toFixed(3)+')';
+      ctx.beginPath();ctx.arc(0,0,f.r,0,7);ctx.fill();
+    }
+    ctx.restore();
+  }
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(const f of flakes){
+      f.y+=f.vy;f.x+=f.vx+Math.sin(f.ph)*0.25;f.ph+=f.sw;
+      if(f.y>H+6){f.y=-6;f.x=Math.random()*W;}
+      if(f.x<-6)f.x=W+6;if(f.x>W+6)f.x=-6;
+      drawF(f);
+    }
+    requestAnimationFrame(loop);
+  }
+  if(!REDUCE)loop();else{for(const f of flakes)drawF(f);}
+
+  /* ===== 章节 ===== */
+  const CHAPTERS=[
+    {id:'cover',zh:'封面',en:'COVER'},
+    {id:'pre',zh:'序',en:'PREFACE'},
+    {id:'today',zh:'今天',en:'TODAY'},
+    {id:'tomorrow',zh:'明天',en:'TOMORROW'},
+    {id:'dayafter',zh:'后天',en:'AFTER'},
+    {id:'ending',zh:'尾声',en:'ENDING'}
+  ];
+
+  /* ===== Deck：全屏逐屏 ===== */
+  const panels=[...document.querySelectorAll('.panel')];
+  let cur2=0,started=false;
+  const hub=document.getElementById('hub');
+  const back=document.getElementById('back');
+  function show(i){
+    i=(i+panels.length)%panels.length;const p=panels[i];
+    panels.forEach((s,k)=>s.classList.toggle('active',k===i));
+    p.classList.remove('active');void p.offsetWidth;p.classList.add('active');
+    cur2=i;
+    back.classList.toggle('show',i!==0);
+  }
+
+  /* 键盘：方向键前后翻屏 */
+  addEventListener('keydown',e=>{
+    if(!started)return;
+    if(hub.classList.contains('open'))return;
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){show(cur2+1);e.preventDefault();}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){show(cur2-1);e.preventDefault();}
+  });
+
+  /* 轻点任意处：翻到下一屏；封面轻点返回 Hub */
+  const deck=document.getElementById('deck');
+  let pX=0,pY=0,pT=0;
+  function isUI(t){return t.closest('a,button,.tag,.back');}
+  deck.addEventListener('pointerdown',e=>{pX=e.clientX;pY=e.clientY;pT=Date.now();},{passive:true});
+  deck.addEventListener('pointerup',e=>{
+    const dx=e.clientX-pX,dy=e.clientY-pY,dt=Date.now()-pT;
+    if(Math.hypot(dx,dy)<14&&dt<600&&!isUI(e.target)){
+      if(cur2===0)openHub();else show(cur2+1);
+    }
+  },{passive:true});
+  back.addEventListener('click',openHub);
+
+  /* ===== Hub：半圆卡片轮盘 ===== */
+  const stage=hub.querySelector('.stage');
+  let hubOpen=false,rot=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false,built=false;
+  const HUB_ROT=0.14;
+  function buildHub(){
+    CHAPTERS.forEach((p,i)=>{
+      const c=document.createElement('div');c.className='card';c.dataset.i=i;
+      c.innerHTML='<div class="scrim"></div>'+
+        '<svg class="tree" viewBox="0 0 200 240"><use href="#tree"/></svg>'+
+        '<div class="enter">ENTER ›</div><div class="lab">'+p.zh+'</div><div class="en">'+p.en+'</div>';
+      c.addEventListener('click',()=>{if(hubDragged){hubDragged=false;return;}enterHub(i);});
+      stage.appendChild(c);p.el=c;
+    });
+    hub.addEventListener('wheel',e=>{e.preventDefault();rot+=e.deltaY*0.0016;},{passive:false});
+    let lastY=null;
+    hub.addEventListener('pointerdown',e=>{lastY=e.clientY;hubDragged=false;});
+    hub.addEventListener('pointermove',e=>{if(lastY!==null){const d=lastY-e.clientY;rot+=d*0.004;if(Math.abs(d)>8)hubDragged=true;lastY=e.clientY;}},{passive:false});
+    hub.addEventListener('pointerup',()=>{lastY=null;});
+    addEventListener('keydown',e=>{
+      if(!hubOpen)return;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){rot+=0.5;e.preventDefault();}
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){rot-=0.5;e.preventDefault();}
+      else if(e.key==='Enter'||e.key===' '){enterHub(curFront);e.preventDefault();}
+    });
+    built=true;
+  }
+  function renderHub(ts){
+    if(!hubOpen){hubRAF=null;return;}
+    if(!lastT)lastT=ts;else rot+=HUB_ROT*(ts-lastT)/1000;
+    lastT=ts;
+    const cx=innerWidth/2,cy=innerHeight*0.98,R=Math.min(innerHeight*0.6,innerWidth*0.58);
+    const N=CHAPTERS.length;let frontI=-1,frontD=1e9;
+    CHAPTERS.forEach((p,i)=>{
+      let a=((Math.PI-i*(2*Math.PI/N))+rot)%(2*Math.PI);if(a<0)a+=2*Math.PI;
+      const s=Math.sin(a),x=cx+R*Math.cos(a),y=cy-R*s;
+      const c=p.el,onArc=a<=Math.PI+0.02;
+      const sc=0.46+0.6*Math.max(0,s),op=onArc?(0.32+0.68*Math.max(0,s)):0;
+      const cw=c.offsetWidth||148,chh=c.offsetHeight||196;
+      c.style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-chh/2).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
+      c.style.opacity=op.toFixed(3);
+      c.style.zIndex=Math.round(s*100)+100;
+      c.style.filter=onArc?(s>0.9?'none':'saturate(.85) brightness(.92)'):'none';
+      c.classList.remove('front');
+      const d=Math.abs(a-Math.PI/2);
+      if(onArc&&d<frontD){frontD=d;frontI=i;}
+    });
+    if(frontI>=0){CHAPTERS[frontI].el.classList.add('front');CHAPTERS[frontI].el.style.zIndex=300;curFront=frontI;}
+    hubRAF=requestAnimationFrame(renderHub);
+  }
+  function openHub(){
+    if(!built)buildHub();
+    hubOpen=true;hub.classList.add('open');
+    if(!hubRAF){lastT=0;hubRAF=requestAnimationFrame(renderHub);}
+  }
+  function enterHub(i){
+    if(!hubOpen)return;
+    if(i===undefined)i=curFront;
+    hubOpen=false;hub.classList.remove('open');
+    if(hubRAF){cancelAnimationFrame(hubRAF);hubRAF=null;}
+    show(i);
+  }
+
+  /* ===== 开场 ===== */
+  const intro=document.getElementById('intro');
+  let done=false;
+  function finish(){
+    if(done)return;done=true;
+    intro.classList.add('done');
+    setTimeout(()=>{intro.style.display='none';},1100);
+    started=true;
+    openHub();
+  }
+  intro.addEventListener('click',finish);
+  intro.addEventListener('touchend',finish,{passive:true});
+  if(REDUCE||!intro){if(intro)intro.style.display='none';started=true;openHub();}
+  else setTimeout(finish,8000);
+})();
+</script>
+</body>
+</html>
