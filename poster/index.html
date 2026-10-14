@@ -41,11 +41,11 @@ body{
 .poster{position:absolute;inset:0;opacity:0;pointer-events:none;
   transition:opacity .8s ease;overflow:auto}
 .poster.active{opacity:1;pointer-events:auto}
-/* 宽屏：居中 3:5 纸卡 + 纸垫 */
-@media(min-aspect-ratio:3/5){
+/* 宽屏：居中 3:5 纸卡 + 纸垫（手机强制横屏时同样生效） */
+@media(min-aspect-ratio:3/5),(orientation:portrait) and (pointer:coarse) and (max-width:820px){
   #deck{background:var(--mat)}
   .poster{inset:auto;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:calc(94vh*3/5);height:94vh;
+    width:calc(94vmin*3/5);height:94vmin;
     box-shadow:0 24px 60px rgba(0,0,0,.22),0 2px 0 rgba(255,255,255,.4) inset;
     background:radial-gradient(135% 110% at 38% 30%,var(--paper) 0%,var(--paper2) 62%,var(--paper-edge) 100%)}
 }
@@ -59,12 +59,12 @@ body{
 .eyebrow{font-family:var(--mono);letter-spacing:.36em;font-size:11px;color:var(--dim);
   text-transform:uppercase;margin-bottom:18px}
 .ch-no{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--faint);margin-bottom:12px}
-.title{font-weight:500;font-size:clamp(26px,5.6vw,50px);line-height:1.32;letter-spacing:.05em;color:var(--ink)}
-.sub{font-weight:300;font-size:clamp(14px,3vw,18px);color:var(--dim);margin-top:14px;letter-spacing:.04em}
-.script{font-weight:300;font-size:clamp(16px,3.2vw,24px);line-height:1.7;margin:18px 0;color:var(--ink)}
-.en{font-family:var(--mono);letter-spacing:.18em;font-size:clamp(11px,2.4vw,14px);
+.title{font-weight:500;font-size:clamp(26px,5.6vmax,50px);line-height:1.32;letter-spacing:.05em;color:var(--ink)}
+.sub{font-weight:300;font-size:clamp(14px,3vmax,18px);color:var(--dim);margin-top:14px;letter-spacing:.04em}
+.script{font-weight:300;font-size:clamp(16px,3.2vmax,24px);line-height:1.7;margin:18px 0;color:var(--ink)}
+.en{font-family:var(--mono);letter-spacing:.18em;font-size:clamp(11px,2.4vmax,14px);
   color:var(--acc);text-transform:uppercase}
-.micro{font-family:var(--mono);font-size:clamp(10px,2.1vw,12.5px);line-height:1.85;
+.micro{font-family:var(--mono);font-size:clamp(10px,2.1vmax,12.5px);line-height:1.85;
   color:var(--dim);letter-spacing:.02em;margin-top:14px}
 .micro li{list-style:none;margin:7px 0;padding-left:14px;position:relative}
 .micro li::before{content:"—";position:absolute;left:0;color:var(--faint)}
@@ -73,7 +73,7 @@ body{
 /* ===== 各章定位（统一黑白，无冷色）===== */
 /* 封面：标题上左，枯树右下，中性微光 */
 .p-cover .copy{top:13%;left:12%}
-.p-cover .title{font-size:clamp(24px,8.5vw,38px);letter-spacing:.04em;white-space:nowrap}
+.p-cover .title{font-size:clamp(24px,8.5vmax,38px);letter-spacing:.04em;white-space:nowrap}
 .p-cover .focal{right:11%;bottom:9%;width:clamp(110px,26%,220px)}
 .p-cover .glow{position:absolute;inset:-40% -30% -10% -10%;z-index:-1;
   background:radial-gradient(50% 50% at 50% 55%,rgba(28,28,28,.12),rgba(28,28,28,0) 70%)}
@@ -85,8 +85,8 @@ body{
 /* 须知：字体主导（档案微缩文字），左上窄列 + 右下竖排署名作边缘配重 */
 .p-notice .copy{top:12%;left:13%;width:min(52%,420px)}
 .p-notice .eyebrow{margin-bottom:10px}
-.p-notice .title{font-size:clamp(20px,4vw,34px)}
-.p-notice .micro{font-size:clamp(9.5px,1.9vw,11px);line-height:1.6;margin-top:10px}
+.p-notice .title{font-size:clamp(20px,4vmax,34px)}
+.p-notice .micro{font-size:clamp(9.5px,1.9vmax,11px);line-height:1.6;margin-top:10px}
 .p-notice .micro li{margin:4px 0}
 .p-notice .rule{position:absolute;top:0;left:0;width:46px;height:2px;background:var(--acc);opacity:.9}
 .p-notice .stamp{position:absolute;top:-2px;right:-4px;width:13px;height:13px;border:1.5px solid var(--acc);opacity:.85;transform:rotate(8deg)}
@@ -98,7 +98,7 @@ body{
 .p-end .horizon{position:absolute;left:8%;right:8%;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:.9}
 .p-end .sun{position:absolute;left:50%;top:0;width:64px;height:64px;transform:translate(-50%,-50%);
   border-radius:50%;background:radial-gradient(circle,rgba(28,28,28,.12),rgba(28,28,28,0) 70%)}
-.p-end .flake2{position:absolute;top:15%;right:13%;width:clamp(20px,5vw,30px);
+.p-end .flake2{position:absolute;top:15%;right:13%;width:clamp(20px,5vmax,30px);
   color:var(--acc);opacity:.85}
 .p-end .copy{bottom:12%;left:12%}
 
@@ -122,28 +122,42 @@ body{
 #intro-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.94);text-align:center;opacity:0;pointer-events:none;z-index:2;
   transition:opacity 1.5s ease,transform 1.5s cubic-bezier(.16,1,.3,1)}
 #intro.on-title #intro-title{opacity:1;transform:translate(-50%,-50%) scale(1)}
-#intro-title .t{font-family:var(--serif);font-weight:500;font-size:clamp(30px,7vw,62px);letter-spacing:.08em;color:var(--ink);
+#intro-title .t{font-family:var(--serif);font-weight:500;font-size:clamp(30px,7vmax,62px);letter-spacing:.08em;color:var(--ink);
   text-shadow:0 2px 18px rgba(0,0,0,.3)}
 #intro-title .rule{width:120px;height:1px;margin:18px auto 14px;background:linear-gradient(90deg,transparent,rgba(40,40,40,.55),transparent)}
 #intro-title .s{font-family:var(--mono);font-size:11px;letter-spacing:.4em;text-indent:.4em;color:var(--dim);text-transform:uppercase}
 #intro .skip-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--faint);opacity:0;transition:opacity 1.2s ease .6s;pointer-events:none}
 #intro.on-title .skip-hint{opacity:1}
 
-/* ===== 半圆页面选择枢纽：开场结束后进入 ===== */
+/* ===== 手机竖屏 → 强制横屏呈现（整体旋转 90°）===== */
+@media (orientation:portrait) and (pointer:coarse) and (max-width:820px){
+  body{position:relative;left:100vw;top:0;width:100vh;height:100vw;
+    transform:rotate(90deg);transform-origin:left top}
+}
+
+/* ===== 页面选择枢纽：深空星野（参考：黑底星点 + 弧上月群 + 大月 + 叠句文字）===== */
 #hub{position:fixed;inset:0;z-index:175;overflow:hidden;touch-action:none;
-  background:radial-gradient(120% 100% at 50% 38%,var(--paper) 0%,var(--paper-edge) 80%);
+  background:radial-gradient(120% 100% at 46% 34%,#191919 0%,#101010 55%,#060606 100%);
   opacity:0;visibility:hidden;pointer-events:none;transition:opacity .8s ease,visibility .8s}
 #hub.open{opacity:1;visibility:visible;pointer-events:auto}
-#hub .hub-head{position:absolute;top:4.5vh;left:6vw;text-align:left;pointer-events:none;z-index:4}
-#hub .hub-head .h{font-family:var(--serif);font-weight:500;font-size:clamp(20px,3.2vw,32px);letter-spacing:.08em;color:var(--ink);
-  text-shadow:0 2px 16px rgba(0,0,0,.25)}
-#hub .hub-head .rule{width:90px;height:1px;margin:13px 0 11px;background:linear-gradient(90deg,rgba(40,40,40,.5),transparent)}
-#hub .hub-head .s{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--dim);text-transform:uppercase}
+#hub .hub-head{position:absolute;top:4.5vmin;left:6vmax;text-align:left;pointer-events:none;z-index:4}
+#hub .hub-head .h{font-family:var(--serif);font-weight:500;font-size:clamp(20px,3.2vmax,32px);letter-spacing:.08em;color:#efefec;
+  text-shadow:0 2px 16px rgba(0,0,0,.6)}
+#hub .hub-head .rule{width:90px;height:1px;margin:13px 0 11px;background:linear-gradient(90deg,rgba(235,235,235,.5),transparent)}
+#hub .hub-head .s{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:#8d8d8d;text-transform:uppercase}
+/* 右上叠句（参考：Accept the void ×4 的排布） */
+#hub .stack{position:absolute;top:6vmin;right:6vmax;text-align:right;pointer-events:none;z-index:3}
+#hub .stack div{font-family:var(--serif);font-weight:500;letter-spacing:.1em;color:#e4e4e1;line-height:1.3;
+  text-shadow:0 2px 14px rgba(0,0,0,.6)}
+#hub .stack div:nth-child(1){font-size:clamp(13px,2.2vmax,24px);opacity:.92}
+#hub .stack div:nth-child(2){font-size:clamp(15px,2.6vmax,28px);opacity:.68}
+#hub .stack div:nth-child(3){font-size:clamp(17px,3vmax,32px);opacity:.46}
+#hub .stack div:nth-child(4){font-size:clamp(19px,3.4vmax,36px);opacity:.3}
 #hub .stage{position:absolute;inset:0}
 /* 大半月球：整圆月盘栖于右下角、约半轮露出纸面 + 环形山缓转（黑白简约） */
 #hub .moon{position:absolute;border-radius:50%;overflow:hidden;pointer-events:none;z-index:100;
   background:radial-gradient(circle at 30% 26%,#f2f1ee 0%,#cdccc8 42%,#8f8e8a 72%,#54534f 100%);
-  box-shadow:0 0 130px rgba(28,28,28,.16),inset -70px -100px 180px rgba(0,0,0,.38),inset 26px 34px 80px rgba(255,255,255,.12)}
+  box-shadow:0 0 130px rgba(240,240,240,.08),0 0 44px rgba(0,0,0,.6),inset -70px -100px 180px rgba(0,0,0,.38),inset 26px 34px 80px rgba(255,255,255,.12)}
 #hub .moon::after{content:"";position:absolute;inset:0;border-radius:50%;
   box-shadow:inset 0 0 90px rgba(0,0,0,.26)}
 #hub .moon .moon-surface{position:absolute;inset:0;border-radius:50%;mix-blend-mode:multiply;opacity:.5;
@@ -156,17 +170,21 @@ body{
     radial-gradient(circle at 80% 48%,rgba(64,64,64,.18),rgba(64,64,64,0) 5%);
   animation:moonspin 200s linear infinite}
 @keyframes moonspin{to{transform:rotate(360deg)}}
-/* 环月轨道（双环）+ 沿环弧形文字 + 纸面星点 */
+/* 环月轨道（双环 + 环上空心圆点）+ 沿环弧形文字（多重回声）+ 星野 */
 #hub .orbit,#hub .orbit2{position:absolute;border-radius:50%;pointer-events:none;z-index:90;
-  border:1px solid rgba(28,28,28,.22)}
-#hub .orbit2{border-color:rgba(28,28,28,.10)}
-#hub .ringtext{position:absolute;pointer-events:none;z-index:91;opacity:.55;
+  border:1px solid rgba(238,238,236,.30)}
+#hub .orbit2{border-color:rgba(238,238,236,.13)}
+#hub .rdot{position:absolute;border-radius:50%;pointer-events:none;z-index:92;
+  border:1px solid rgba(238,238,236,.5);background:transparent}
+#hub .ringtext{position:absolute;pointer-events:none;z-index:91;opacity:.75;
   animation:ringspin 280s linear infinite;transform-origin:50% 50%}
-#hub .ringtext text{font-family:var(--mono);font-size:11px;letter-spacing:4px;fill:rgba(28,28,28,.6)}
+#hub .ringtext text{font-family:var(--mono);font-size:12.5px;letter-spacing:5px;fill:rgba(236,236,233,.72)}
 #hub .ringtext textPath{dominant-baseline:middle}
+#hub .ringtext.e2{opacity:.4;animation-duration:340s}
+#hub .ringtext.e3{opacity:.22;animation-duration:410s}
 @keyframes ringspin{to{transform:rotate(360deg)}}
 #hub .stars{position:absolute;inset:0;pointer-events:none;z-index:2}
-#hub .stars span{position:absolute;border-radius:50%;background:#1c1c1c}
+#hub .stars span{position:absolute;border-radius:50%;background:#ececea}
 /* 环上星球卡片：圆形小月球（灰阶明暗 + 环形山缓转），章节图形居中，标签悬于星球下方 */
 #hub .card{position:absolute;left:0;top:0;width:132px;height:180px;cursor:pointer;
   background:none;border:none;box-shadow:none;
@@ -174,8 +192,8 @@ body{
 #hub .card .disc{position:absolute;left:50%;top:0;width:110px;height:110px;margin-left:-55px;
   border-radius:50%;overflow:hidden;
   background:radial-gradient(circle at 32% 26%,#f4f3f0 0%,#d6d5d1 40%,#9b9a95 72%,#5d5c58 100%);
-  border:1px solid rgba(30,30,30,.24);
-  box-shadow:inset -16px -22px 36px rgba(0,0,0,.36),inset 8px 12px 24px rgba(255,255,255,.14),0 12px 30px rgba(0,0,0,.16);
+  border:1px solid rgba(240,240,238,.26);
+  box-shadow:inset -16px -22px 36px rgba(0,0,0,.42),inset 8px 12px 24px rgba(255,255,255,.14),0 14px 34px rgba(0,0,0,.55);
   transition:box-shadow .4s ease}
 #hub .card .craters{position:absolute;inset:0;border-radius:50%;mix-blend-mode:multiply;opacity:.5;
   background:
@@ -191,12 +209,12 @@ body{
 #hub .card .thumb{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
 #hub .card .thumb svg{width:50%;height:auto;opacity:.85;color:#262626}
 #hub .card .thumb .glyph{font-family:var(--serif);font-weight:500;font-size:40px;color:#262626;text-shadow:0 0 14px rgba(244,243,240,.8)}
-#hub .card .enter{position:absolute;top:-22px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--ink);opacity:0;transition:opacity .4s;text-transform:uppercase}
-#hub .card .lab{position:absolute;left:0;right:0;top:120px;text-align:center;font-family:var(--serif);font-weight:500;font-size:16px;letter-spacing:.16em;color:var(--ink);text-shadow:0 1px 8px rgba(234,234,232,.9)}
-#hub .card .en{position:absolute;left:0;right:0;top:144px;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase}
-#hub .card.front .disc{box-shadow:0 0 0 2px rgba(28,28,28,.9),0 18px 44px rgba(0,0,0,.28),inset -16px -22px 36px rgba(0,0,0,.36),inset 8px 12px 24px rgba(255,255,255,.14)}
+#hub .card .enter{position:absolute;top:-22px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:#f0f0ee;opacity:0;transition:opacity .4s;text-transform:uppercase}
+#hub .card .lab{position:absolute;left:0;right:0;top:120px;text-align:center;font-family:var(--serif);font-weight:500;font-size:16px;letter-spacing:.16em;color:#ececea;text-shadow:0 1px 10px rgba(0,0,0,.85)}
+#hub .card .en{position:absolute;left:0;right:0;top:144px;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:#949494;text-transform:uppercase}
+#hub .card.front .disc{box-shadow:0 0 0 2px rgba(242,242,240,.92),0 18px 44px rgba(0,0,0,.5),inset -16px -22px 36px rgba(0,0,0,.36),inset 8px 12px 24px rgba(255,255,255,.14)}
 #hub .card.front .enter{opacity:1}
-#hub .hub-tip{position:absolute;bottom:5.5vh;left:6vw;text-align:left;max-width:46%;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--faint);pointer-events:none;z-index:4}
+#hub .hub-tip{position:absolute;bottom:5.5vmin;left:6vmax;text-align:left;max-width:46%;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:#8a8a8a;pointer-events:none;z-index:4}
 @media (max-width:680px){
   #hub .card{width:106px;height:150px}
   #hub .card .disc{width:88px;height:88px;margin-left:-44px}
@@ -284,16 +302,24 @@ body{
   <div class="hub-head">
     <div class="h">今天 · 明天 · 后天</div>
     <div class="rule"></div>
-    <div class="s">Choose a Chapter · 轻触卡片进入</div>
+    <div class="s">Choose a Chapter · 轻触星球进入</div>
+  </div>
+  <div class="stack" aria-hidden="true">
+    <div>今天 · 明天 · 后天</div>
+    <div>今天 · 明天 · 后天</div>
+    <div>今天 · 明天 · 后天</div>
+    <div>今天 · 明天 · 后天</div>
   </div>
   <div class="stage">
     <div class="orbit2"></div>
     <div class="orbit"></div>
     <svg class="ringtext" xmlns="http://www.w3.org/2000/svg"><defs><path id="rtp" d=""></path></defs><text><textPath href="#rtp" startOffset="0"></textPath></text></svg>
+    <svg class="ringtext e2" xmlns="http://www.w3.org/2000/svg"><text><textPath href="#rtp" startOffset="0"></textPath></text></svg>
+    <svg class="ringtext e3" xmlns="http://www.w3.org/2000/svg"><text><textPath href="#rtp" startOffset="0"></textPath></text></svg>
     <div class="stars" id="stars"></div>
     <div class="moon"><div class="moon-surface"></div></div>
   </div>
-  <div class="hub-tip">上下滚动 / 滚轮 转动月环 · 轻触卡片进入 · 再轻触页面返回</div>
+  <div class="hub-tip">滑动 / 滚轮 转动星环 · 轻触星球进入 · 再轻触页面返回</div>
 </div>
 
 <!-- Deck -->
@@ -321,7 +347,7 @@ body{
     <div class="copy">
       <div class="ch-no">// 01 · 瘾症</div>
       <div class="eyebrow">Persona · 人设</div>
-      <h2 class="title" style="font-size:clamp(24px,5vw,44px)">瘾症</h2>
+      <h2 class="title" style="font-size:clamp(24px,5vmax,44px)">瘾症</h2>
       <p class="script">我们是漂泊的雪<br>脸颊的泪 和温热的心脏</p>
       <div class="micro">
         <div>女｜18｜le-t｜双鱼｜INFP</div>
@@ -340,7 +366,7 @@ body{
       <div class="stamp"></div>
       <div class="ch-no">// 02 · 须知</div>
       <div class="eyebrow">Notice · 告知</div>
-      <h2 class="title" style="font-size:clamp(24px,5vw,44px)">须知</h2>
+      <h2 class="title" style="font-size:clamp(24px,5vmax,44px)">须知</h2>
       <ol class="micro">
         <li>请在开始前说明您的喜好与雷点</li>
         <li>否则在涉雷时不予退款</li>
@@ -369,7 +395,7 @@ body{
     <div class="copy">
       <div class="ch-no">// 03 · END</div>
       <div class="eyebrow">Ending</div>
-      <h2 class="title" style="font-size:clamp(22px,4.6vw,40px)">END</h2>
+      <h2 class="title" style="font-size:clamp(22px,4.6vmax,40px)">END</h2>
       <p class="script">得到一切就忘记你<br>得到你就忘记一切</p>
       <div class="en" style="margin-top:12px">We hope to be carefree and come first.</div>
       <p class="credit">瘾症 · by ivy</p>
@@ -385,6 +411,10 @@ body{
 (function(){
   'use strict';
   var REDUCE=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var FORCE=window.matchMedia&&matchMedia('(orientation:portrait) and (pointer:coarse) and (max-width:820px)').matches;
+  /* 手机竖屏强制横屏：视觉宽高 = 真实高/宽互换 */
+  function VW(){return FORCE?innerHeight:innerWidth;}
+  function VH(){return FORCE?innerWidth:innerHeight;}
 
   /* ===== 章节数据（Hub 卡片）===== */
   var HUB_PAGES=[
@@ -425,11 +455,17 @@ body{
       c.addEventListener('click',function(){ if(hubDragged){hubDragged=false;return;} enterHub(i); });
       stage.appendChild(c); p.el=c;
     });
-    /* 沿环弧形文字（参考：环形轨道上的字） */
-    var rt=hubEl.querySelector('.ringtext textPath');
-    if(rt){var rs='今天 · 明天 · 后天 · WHAT SETS THEM APART · STARS DIE BUT LIGHT REMAINS · ';
-      rt.textContent=Array(8).join(rs)+rs;}
-    /* 纸面星点（参考：星夜），避开月球角落 */
+    /* 沿环弧形文字（多重回声，参考：环上月群上的弧文字） */
+    var rts=hubEl.querySelectorAll('.ringtext textPath');
+    if(rts.length){var rs='今天 · 明天 · 后天 · WHAT SETS THEM APART · STARS DIE BUT LIGHT REMAINS · ';
+      var txt=Array(8).join(rs)+rs;
+      rts.forEach(function(tp){tp.textContent=txt;});}
+    /* 环上空心圆点（参考：轨道上的小圆标记） */
+    var RDOTS=[{r:1,a:2.30,k:11},{r:2,a:3.95,k:14},{r:1,a:5.30,k:9},{r:2,a:0.65,k:16},{r:1,a:4.55,k:12}];
+    RDOTS.forEach(function(o){var d=document.createElement('div');d.className='rdot';
+      d.style.width=o.k+'px';d.style.height=o.k+'px';stage.appendChild(d);o.el=d;});
+    hubEl.__rdots=RDOTS;
+    /* 星点（参考：深空星野） */
     var st=hubEl.querySelector('#stars');
     if(st){for(var s=0;s<34;s++){var d=document.createElement('span');
       var ss=(Math.random()*1.6+0.8).toFixed(1);
@@ -454,8 +490,8 @@ body{
     if(!hubOpen){hubRAF=null;return;}
     if(!lastT)lastT=ts; else rot+=HUB_ROT*(ts-lastT)/1000;
     lastT=ts;
-    var W=innerWidth,H=innerHeight;
-    /* 大月球栖于右下角，月心在屏外 → 仅半轮（约）露出纸面 */
+    var W=VW(),H=VH();
+    /* 大月球栖于右下角，月心在屏外 → 仅半轮（约）露出 */
     var mcx=W*0.94, mcy=H*1.04;
     var Rm=Math.min(W*0.66,H*0.58);
     var Rr=Rm*1.12, Rr2=Rr*1.30;
@@ -468,11 +504,18 @@ body{
     var orbit2=hubEl.querySelector('.orbit2');
     if(orbit2){var od2=Rr2*2;orbit2.style.width=od2+'px';orbit2.style.height=od2+'px';
       orbit2.style.left=(mcx-Rr2)+'px';orbit2.style.top=(mcy-Rr2)+'px';}
-    var rt=hubEl.querySelector('.ringtext');
-    if(rt){var rsz=Rr2*2;rt.style.width=rsz+'px';rt.style.height=rsz+'px';
-      rt.style.left=(mcx-Rr2)+'px';rt.style.top=(mcy-Rr2)+'px';
-      var rpath=hubEl.querySelector('#rtp');
-      if(rpath)rpath.setAttribute('d','M 0 '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 '+(2*Rr2)+' '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 0 '+Rr2);}
+    var rts=hubEl.querySelectorAll('.ringtext');
+    var offs=[[0,0],[16,10],[34,22]];
+    rts.forEach(function(rt,ri){
+      var rsz=Rr2*2;rt.style.width=rsz+'px';rt.style.height=rsz+'px';
+      rt.style.left=(mcx-Rr2+offs[ri][0])+'px';rt.style.top=(mcy-Rr2+offs[ri][1])+'px';});
+    var rpath=hubEl.querySelector('#rtp');
+    if(rpath)rpath.setAttribute('d','M 0 '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 '+(2*Rr2)+' '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 0 '+Rr2);
+    /* 环上空心圆点（静止，仅作轨道标记） */
+    var rd=hubEl.__rdots;
+    if(rd)rd.forEach(function(o){var R=o.r===1?Rr:Rr2;
+      var x=mcx+R*Math.cos(o.a), y=mcy+R*Math.sin(o.a);
+      o.el.style.transform='translate3d('+(x-o.k/2).toFixed(1)+'px,'+(y-o.k/2).toFixed(1)+'px,0)';});
     /* 卡片沿环弧滑动：朝向屏幕中心一侧可见，绕向月角处淡出 */
     var n=HUB_PAGES.length, frontI=-1, frontD=1e9;
     var a0=Math.atan2(H*0.5-mcy, W*0.5-mcx);
@@ -539,12 +582,12 @@ body{
   (function(){
     if(!introEl)return;
     if(REDUCE){introEl.remove();openHub();return;}
-    var MOBILE=innerWidth<680;
+    var MOBILE=VW()<680;
     var N2=MOBILE?12:18;
     var lerp=function(a,b,k){return a+(b-a)*k;};
     var ease=function(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
-    var CX=function(){return innerWidth/2;}, CY=function(){return innerHeight/2;};
-    var R=Math.min(innerWidth,innerHeight)*(MOBILE?0.31:0.30);
+    var CX=function(){return VW()/2;}, CY=function(){return VH()/2;};
+    var R=Math.min(VW(),VH())*(MOBILE?0.31:0.30);
     var PAPERS=['#eaeae8','#e0e0de','#d2d2cf','#d8d8d6'];
     var items=[];
     for(var i=0;i<N2;i++){
@@ -556,9 +599,9 @@ body{
       introEl.appendChild(el);
       var slot=i/N2*Math.PI*2+Math.random()*0.12;
       items.push({el:el,w:w,
-        sx:(Math.random()*0.78+0.11)*innerWidth, sy:(Math.random()*0.66+0.17)*innerHeight,
+        sx:(Math.random()*0.78+0.11)*VW(), sy:(Math.random()*0.66+0.17)*VH(),
         sr:(Math.random()-0.5)*56, ss:Math.random()*0.3+(MOBILE?0.5:0.55),
-        ax:((i/(N2-1))-0.5)*innerWidth*0.82, ay:CY()+Math.pow((i/(N2-1))-0.5,2)*innerHeight*0.2,
+        ax:((i/(N2-1))-0.5)*VW()*0.82, ay:CY()+Math.pow((i/(N2-1))-0.5,2)*VH()*0.2,
         ar:(Math.random()-0.5)*16, as:MOBILE?0.66:0.72,
         slot:slot, rr:R*(0.95+Math.random()*0.1), cs:Math.random()*0.1+(MOBILE?0.56:0.62)});
     }
