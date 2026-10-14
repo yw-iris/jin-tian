@@ -41,8 +41,9 @@ body{
 .poster{position:absolute;inset:0;opacity:0;pointer-events:none;
   transition:opacity .8s ease;overflow:auto}
 .poster.active{opacity:1;pointer-events:auto}
-/* 宽屏：居中 3:5 纸卡 + 纸垫（手机强制横屏时同样生效） */
-@media(min-aspect-ratio:3/5),(orientation:portrait) and (pointer:coarse) and (max-width:820px){
+/* 宽屏（桌面 / 平板横持）：3:5 竖版纸卡居中 + 纸垫（不适用于手机横持） */
+@media (min-aspect-ratio:3/5) and (pointer:fine),
+       (min-aspect-ratio:3/5) and (min-width:900px){
   #deck{background:var(--mat)}
   .poster{inset:auto;top:50%;left:50%;transform:translate(-50%,-50%);
     width:calc(94vmin*3/5);height:94vmin;
@@ -116,6 +117,50 @@ body{
 @media (orientation:portrait) and (pointer:coarse) and (max-width:820px){
   body{position:relative;left:100vw;top:0;width:100vh;height:100vw;
     transform:rotate(90deg);transform-origin:left top}
+}
+
+/* ===== 手机（竖屏旋转后 / 横持）进入小星球后的具体页：铺满横屏、横排正立 =====
+   两种方向下视觉框均为 vmax×vmin（844×390），vmin/vmax 数值一致，故共用一套排版。
+   竖屏时 body 已旋转 90°、文字随之转向，用户横持即正立；横持时直接横排正立。 */
+@media (orientation:portrait) and (pointer:coarse) and (max-width:820px),
+       (orientation:landscape) and (pointer:coarse) and (max-height:520px){
+  .poster{box-shadow:none;
+    background:radial-gradient(135% 110% at 38% 30%,var(--paper) 0%,var(--paper2) 62%,var(--paper-edge) 100%)}
+  .copy{top:6%;left:6%;right:6%;max-width:88%}
+  .eyebrow{font-size:10px;margin-bottom:11px}
+  .title{font-size:clamp(20px,5.2vmin,34px)!important;line-height:1.25}
+  .sub{font-size:clamp(12px,2.6vmin,16px);margin-top:10px}
+  .script{font-size:clamp(13px,2.7vmin,19px);margin:10px 0}
+  .en{font-size:clamp(10px,2vmin,13px);margin-top:6px}
+  .micro{font-size:clamp(9px,1.7vmin,11.5px);line-height:1.65;margin-top:9px}
+  .micro li{margin:3px 0}
+  .credit{margin-top:12px}
+
+  /* 封面：标题上左，枯树右下 */
+  .p-cover .copy{top:7%;left:6%}
+  .p-cover .title{white-space:nowrap;font-size:clamp(20px,6vmin,40px)!important}
+  .p-cover .focal{right:6%;bottom:7%;width:clamp(90px,24vmin,170px)}
+
+  /* 瘾症：撕纸剪贴右上，文案左下 */
+  .p-persona .focal{top:8%;right:6%;width:clamp(90px,22vmin,160px)}
+  .p-persona .copy{bottom:7%;left:6%}
+  .p-persona .title{font-size:clamp(20px,5.5vmin,34px)!important}
+
+  /* 须知：档案微缩文字，分两列避免溢出（扁屏高度有限） */
+  .p-notice .copy{top:6%;left:6%;width:auto;right:6%}
+  .p-notice .title{font-size:clamp(18px,4.4vmin,28px)!important}
+  .p-notice .micro{columns:2;column-gap:22px;font-size:clamp(8.5px,1.6vmin,10.5px);line-height:1.55;margin-top:8px}
+  .p-notice .micro li{margin:3px 0;padding-left:12px}
+  .p-notice .sig{right:6%;bottom:5%;font-size:10px}
+
+  /* 尾声：地平线低 + 右上小雪花，文案下左 */
+  .p-end .focal{left:0;right:0;bottom:32%;height:1px}
+  .p-end .flake2{top:8%;right:7%;width:clamp(16px,4vmin,26px)}
+  .p-end .title{font-size:clamp(18px,4.6vmin,30px)!important}
+  .p-end .copy{bottom:7%;left:6%}
+
+  .back{top:10px;left:10px;font-size:10px;padding:6px 11px}
+  .phint{bottom:10px;font-size:9.5px}
 }
 
 /* ===== 页面选择枢纽：以参考图作底图（黑空月群），交互层叠加其上 ===== */
