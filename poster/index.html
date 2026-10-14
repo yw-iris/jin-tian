@@ -205,15 +205,15 @@ body{
   background:url('moon-tex.jpg') center/cover no-repeat;
   animation:planetspin 160s linear infinite}
 @keyframes planetspin{to{transform:rotate(360deg)}}
-/* 球体明暗 + 相位阴影：非正面呈凸月/残月（受光面朝右上，同参考图），正面近满月 */
+/* 相位阴影：--ph 0=残月 1=满月（受光面朝右上，同参考图月链） */
+#hub .card .ph{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 74% 24%,rgba(255,255,255,.14) 0%,rgba(255,255,255,0) 34%),
+             radial-gradient(circle at 16% 90%,rgba(4,4,4,.82) 10%,rgba(4,4,4,.5) 42%,rgba(4,4,4,0) 70%);
+  opacity:calc(1 - var(--ph,1))}
+/* 球体明暗（恒定）：边缘暗角 + 受光高光 */
 #hub .card .disc::after{content:'';position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 70% 28%,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 42%),
-             radial-gradient(circle at 18% 88%,rgba(0,0,0,.72) 8%,rgba(0,0,0,.38) 42%,rgba(0,0,0,0) 68%);
-  box-shadow:inset -14px -18px 30px rgba(0,0,0,.5),inset 6px 8px 18px rgba(255,255,255,.16)}
-#hub .card.front .disc::after{
-  background:radial-gradient(circle at 62% 34%,rgba(255,255,255,.12) 0%,rgba(255,255,255,0) 50%),
-             radial-gradient(circle at 12% 92%,rgba(0,0,0,.34) 6%,rgba(0,0,0,.14) 40%,rgba(0,0,0,0) 66%);
-  box-shadow:inset -10px -14px 26px rgba(0,0,0,.38),inset 6px 8px 18px rgba(255,255,255,.18)}
+  background:radial-gradient(circle at 64% 30%,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 48%);
+  box-shadow:inset -12px -16px 28px rgba(0,0,0,.42),inset 6px 8px 18px rgba(255,255,255,.16)}
 #hub .card .thumb{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
 #hub .card .thumb svg{width:50%;height:auto;opacity:.85;color:#262626}
 #hub .card .thumb .glyph{font-family:var(--serif);font-weight:500;font-size:40px;color:#262626;text-shadow:0 0 14px rgba(244,243,240,.8)}
@@ -224,12 +224,10 @@ body{
 #hub .card.front .enter{opacity:1}
 #hub .hub-tip{position:absolute;bottom:5.5vmin;left:6vmax;text-align:left;max-width:46%;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:#8a8a8a;pointer-events:none;z-index:4}
 @media (max-width:680px){
-  #hub .card{width:106px;height:150px}
-  #hub .card .disc{width:88px;height:88px;margin-left:-44px}
   #hub .card .thumb svg{width:48%}
-  #hub .card .thumb .glyph{font-size:32px}
-  #hub .card .lab{font-size:13.5px;top:98px}
-  #hub .card .en{font-size:7.5px;top:118px}
+  #hub .card .thumb .glyph{font-size:30px}
+  #hub .card .lab{font-size:13.5px}
+  #hub .card .en{font-size:7.5px}
   #hub .card .enter{top:-18px}
 }
 
@@ -447,7 +445,7 @@ body{
   }
 
   /* ===== 半圆枢纽：开场结束后进入，滚动/自转 ===== */
-  var hubOpen=false,fromHub=false,rot=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false;
+  var hubOpen=false,fromHub=false,rot=0,rotT=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false;
   var HUB_ROT=REDUCE?0:0.16; // 半圆自转角速度 rad/s
   function buildHub(){
     var stage=hubEl.querySelector('.stage');
@@ -459,7 +457,8 @@ body{
       else if(p.svg==='branch') thumb='<svg viewBox="0 0 120 120" style="color:'+p.acc+'"><use href="#branch"/></svg>';
       else if(p.svg==='flake') thumb='<svg viewBox="0 0 100 100" style="color:'+p.acc+'"><use href="#flake"/></svg>';
       else thumb='<div class="glyph">'+p.glyph+'</div>';
-      c.innerHTML='<div class="disc"><div class="craters"></div><div class="thumb">'+thumb+'</div></div><div class="enter">ENTER ›</div><div class="lab">'+p.zh+'</div><div class="en">'+p.en+'</div>';
+      c.innerHTML='<div class="disc"><div class="craters"></div><div class="ph"></div><div class="thumb">'+thumb+'</div></div><div class="enter">ENTER ›</div><div class="lab">'+p.zh+'</div><div class="en">'+p.en+'</div>';
+      c.style.setProperty('--ph',[0.5,0.72,0.9,1][i]);
       c.addEventListener('click',function(){ if(hubDragged){hubDragged=false;return;} enterHub(i); });
       stage.appendChild(c); p.el=c;
     });
@@ -468,10 +467,10 @@ body{
     if(rts.length){var rs='今天 · 明天 · 后天 · WHAT SETS THEM APART · STARS DIE BUT LIGHT REMAINS · ';
       var txt=Array(8).join(rs)+rs;
       rts.forEach(function(tp){tp.textContent=txt;});}
-    /* 环上空心圆点（参考：轨道上的小圆标记） */
-    var RDOTS=[{r:1,a:2.30,k:11},{r:2,a:3.95,k:14},{r:1,a:5.30,k:9},{r:2,a:0.65,k:16},{r:1,a:4.55,k:12}];
+    /* 环上空心圆点（参考：月链外侧的空心圆环，与月链错位分布） */
+    var RDOTS=[{moon:0},{moon:1},{moon:2},{moon:3}];
     RDOTS.forEach(function(o){var d=document.createElement('div');d.className='rdot';
-      d.style.width=o.k+'px';d.style.height=o.k+'px';stage.appendChild(d);o.el=d;});
+      stage.appendChild(d);o.el=d;});
     hubEl.__rdots=RDOTS;
     /* 星点（参考：深空星野） */
     var st=hubEl.querySelector('#stars');
@@ -482,65 +481,82 @@ body{
       d.style.top=(Math.random()*68).toFixed(1)+'%';
       d.style.opacity=(Math.random()*0.16+0.08).toFixed(2);
       st.appendChild(d);}}
-    hubEl.addEventListener('wheel',function(e){e.preventDefault();rot+=e.deltaY*0.0016;},{passive:false});
+    hubEl.addEventListener('wheel',function(e){e.preventDefault();rotT=Math.max(-0.05,Math.min(0.05,rotT+e.deltaY*0.0008));},{passive:false});
     var lastY=null;
     hubEl.addEventListener('pointerdown',function(e){lastY=e.clientY;hubDragged=false;});
-    hubEl.addEventListener('pointermove',function(e){ if(lastY!==null){var d=lastY-e.clientY;rot+=d*0.004;if(Math.abs(d)>8)hubDragged=true;lastY=e.clientY;} },{passive:false});
+    hubEl.addEventListener('pointermove',function(e){ if(lastY!==null){var d=lastY-e.clientY;rotT=Math.max(-0.05,Math.min(0.05,rotT+d*0.0016));if(Math.abs(d)>8)hubDragged=true;lastY=e.clientY;} },{passive:false});
     hubEl.addEventListener('pointerup',function(){lastY=null;});
     addEventListener('keydown',function(e){
       if(!hubOpen)return;
-      if(e.key==='ArrowRight'||e.key==='ArrowDown'){rot+=0.5;e.preventDefault();}
-      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){rot-=0.5;e.preventDefault();}
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){rotT=Math.max(-0.05,Math.min(0.05,rotT+0.04));e.preventDefault();}
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){rotT=Math.max(-0.05,Math.min(0.05,rotT-0.04));e.preventDefault();}
       else if(e.key==='Enter'||e.key===' '){enterHub(curFront);e.preventDefault();}
     });
   }
   function renderHub(ts){
     if(!hubOpen){hubRAF=null;return;}
-    if(!lastT)lastT=ts; else rot+=HUB_ROT*(ts-lastT)/1000;
+    if(!lastT)lastT=ts;
     lastT=ts;
+    /* 摇摆：输入驱动 rotT（有界 ±0.16rad），缓慢回弹至图中标准排列 */
+    rotT*=0.985; rot+=(rotT-rot)*0.10;
     var W=VW(),H=VH();
-    /* 轨道几何对齐底图：月心约在右下屏外(0.887W,1.43H)，星球沿大弧横贯左上屏内 */
-    var mcx=W*0.887, mcy=H*1.43;
-    var Rr=Math.min(W,H)*1.11, Rr2=Rr*1.30;
+    /* 轨道几何严格对齐底图：底图 cover 锚定 right bottom，大月拟合 center(1369,1274) R=918 (1440x673) */
+    var IW=1440, IH=673, s=Math.max(W/IW,H/IH);
+    var offX=W-IW*s, offY=H-IH*s;
+    var mcx=offX+1369*s, mcy=offY+1274*s;
+    var Rb=918*s;
+    var Rr=Rb*1.383;                 /* 小月链所在同心圆 */
+    var Rout=Rb*1.565;               /* 空心圆点所在外侧同心圆 */
+    var Rt=[Rb*1.10,Rb*1.165,Rb*1.23]; /* 弧形文字三重回声（大月边↔月链之间） */
     var orbit=hubEl.querySelector('.orbit');
     if(orbit){var od=Rr*2;orbit.style.width=od+'px';orbit.style.height=od+'px';
       orbit.style.left=(mcx-Rr)+'px';orbit.style.top=(mcy-Rr)+'px';}
     var orbit2=hubEl.querySelector('.orbit2');
-    if(orbit2){var od2=Rr2*2;orbit2.style.width=od2+'px';orbit2.style.height=od2+'px';
-      orbit2.style.left=(mcx-Rr2)+'px';orbit2.style.top=(mcy-Rr2)+'px';}
+    if(orbit2){var od2=Rout*2;orbit2.style.width=od2+'px';orbit2.style.height=od2+'px';
+      orbit2.style.left=(mcx-Rout)+'px';orbit2.style.top=(mcy-Rout)+'px';}
     var rts=hubEl.querySelectorAll('.ringtext');
-    var offs=[[0,0],[16,10],[34,22]];
+    var offs=[[0,0],[14,9],[28,18]];
     rts.forEach(function(rt,ri){
-      var rsz=Rr2*2;rt.style.width=rsz+'px';rt.style.height=rsz+'px';
-      rt.style.left=(mcx-Rr2+offs[ri][0])+'px';rt.style.top=(mcy-Rr2+offs[ri][1])+'px';});
+      var rsz=Rt[ri]*2;rt.style.width=rsz+'px';rt.style.height=rsz+'px';
+      rt.style.left=(mcx-Rt[ri]+offs[ri][0])+'px';rt.style.top=(mcy-Rt[ri]+offs[ri][1])+'px';});
     var rpath=hubEl.querySelector('#rtp');
-    if(rpath)rpath.setAttribute('d','M 0 '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 '+(2*Rr2)+' '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 0 '+Rr2);
-    /* 环上空心圆点（静止，仅作轨道标记） */
-    var rd=hubEl.__rdots;
-    if(rd)rd.forEach(function(o){var R=o.r===1?Rr:Rr2;
-      var x=mcx+R*Math.cos(o.a), y=mcy+R*Math.sin(o.a);
-      o.el.style.transform='translate3d('+(x-o.k/2).toFixed(1)+'px,'+(y-o.k/2).toFixed(1)+'px,0)';});
-    /* 卡片沿环弧滑动：朝向屏幕中心一侧可见，绕向月角处淡出 */
+    if(rpath)rpath.setAttribute('d','M 0 '+Rt[2]+' A '+Rt[2]+' '+Rt[2]+' 0 1 1 '+(2*Rt[2])+' '+Rt[2]+' A '+Rt[2]+' '+Rt[2]+' 0 1 1 0 '+Rt[2]);
+    /* 小月链：直接映射底图月心（图中 5 颗月的第 2~4 颗坐标 + 沿链外推 1 颗），
+       槽 0/1 的小残月留作链尾装饰——与图中月链观感一致；
+       极端宽高比下月位出屏时，回退为「屏内可见弧段」均布 */
     var n=HUB_PAGES.length, frontI=-1, frontD=1e9;
     var a0=Math.atan2(H*0.5-mcy, W*0.5-mcx);
+    var MX=[521,626,748,890], MY=[327,233,175,108]; /* 图中月心(image px)，末位为外推 */
+    var MR=[26.8,30.7,32.4,34.5];                   /* 图中月半径(image px) */
+    var P=MX.map(function(mx,i){return [offX+mx*s, offY+MY[i]*s, Math.max(48,2*MR[i]*s*1.1)];});
+    var fits=P.every(function(q){return q[0]>10&&q[0]<W-10&&q[1]>10&&q[1]<H-10;});
+    var angles,sizes,POS;
+    if(fits){POS=P; sizes=P.map(function(q){return q[2];});}
+    else{
+      var A=[]; for(var t=-2.94;t<=-1.18;t+=0.008){
+        var px2=mcx+Rr*Math.cos(t), py2=mcy+Rr*Math.sin(t);
+        if(px2>16&&px2<W-16&&py2>16&&py2<H-16)A.push(t);}
+      var aLo=A.length?A[0]:-2.5, aHi=A.length?A[A.length-1]:-1.9;
+      angles=[]; sizes=[];
+      for(var i2=0;i2<n;i2++){angles.push(aLo+i2*(aHi-aLo)/(n-1));
+        sizes.push(Math.max(48,2*(21+11.3*i2/(n-1))*s*1.06));}}
+    var ca=Math.cos(rot), sa=Math.sin(rot);
     HUB_PAGES.forEach(function(p,i){
-      var a=((Math.PI/2 - i*(2*Math.PI/n))+rot-0.87)%(2*Math.PI); if(a<0)a+=2*Math.PI;
-      var ca=Math.cos(a);
-      var x=mcx+Rr*Math.cos(a);
-      var y=mcy+Rr*Math.sin(a);
-      var vis=ca<-0.05?1:(ca<0.45?1-(ca+0.05)/0.5:0);
-      if(x<-90||x>W+90||y<-90||y>H+90)vis=0;
-      var c=p.el;
-      var sc=0.68+0.36*vis;
-      var op=vis;
-      var cw=c.offsetWidth||148, chh=c.offsetHeight||196;
-      c.style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-chh/2).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
-      c.style.opacity=op.toFixed(3);
-      c.style.zIndex=200+Math.round(vis*100);
-      c.style.pointerEvents=vis>0.5?'auto':'none';
+      var d=sizes[i], x, y;
+      if(POS){x=POS[i][0]; y=POS[i][1];
+        var px0=x-mcx, py0=y-mcy;
+        x=mcx+px0*ca-py0*sa; y=mcy+px0*sa+py0*ca;}
+      else{x=mcx+Rr*Math.cos(angles[i]); y=mcy+Rr*Math.sin(angles[i]);}
+      var c=p.el, disc=c.querySelector('.disc');
+      disc.style.width=d+'px';disc.style.height=d+'px';disc.style.marginLeft=(-d/2)+'px';
+      var lab=c.querySelector('.lab'); lab.style.top=(d+10)+'px';
+      var en=c.querySelector('.en'); en.style.top=(d+34)+'px';
+      var cw=c.offsetWidth||132;
+      c.style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-d/2).toFixed(1)+'px,0)';
+      c.style.opacity=1; c.style.zIndex=200+i; c.style.pointerEvents='auto';
       c.classList.remove('front');
-      var dA=Math.abs(Math.atan2(Math.sin(a-a0),Math.cos(a-a0)));
-      if(vis>0.15&&dA<frontD){frontD=dA;frontI=i;}
+      var dA=Math.abs(Math.atan2(Math.sin(Math.atan2(y-mcy,x-mcx)-a0),Math.cos(Math.atan2(y-mcy,x-mcx)-a0)));
+      if(dA<frontD){frontD=dA;frontI=i;}
     });
     if(frontI>=0){var fc=HUB_PAGES[frontI].el;fc.classList.add('front');fc.style.zIndex=320;curFront=frontI;}
     hubRAF=requestAnimationFrame(renderHub);
