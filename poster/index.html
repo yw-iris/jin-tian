@@ -134,18 +134,18 @@ body{
   background:radial-gradient(120% 100% at 50% 38%,var(--paper) 0%,var(--paper-edge) 80%);
   opacity:0;visibility:hidden;pointer-events:none;transition:opacity .8s ease,visibility .8s}
 #hub.open{opacity:1;visibility:visible;pointer-events:auto}
-#hub .hub-head{position:absolute;top:3.6vh;left:0;right:0;text-align:center;pointer-events:none;z-index:4}
+#hub .hub-head{position:absolute;top:4.5vh;left:6vw;text-align:left;pointer-events:none;z-index:4}
 #hub .hub-head .h{font-family:var(--serif);font-weight:500;font-size:clamp(20px,3.2vw,32px);letter-spacing:.08em;color:var(--ink);
   text-shadow:0 2px 16px rgba(0,0,0,.25)}
-#hub .hub-head .rule{width:90px;height:1px;margin:13px auto 11px;background:linear-gradient(90deg,transparent,rgba(40,40,40,.5),transparent)}
+#hub .hub-head .rule{width:90px;height:1px;margin:13px 0 11px;background:linear-gradient(90deg,rgba(40,40,40,.5),transparent)}
 #hub .hub-head .s{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--dim);text-transform:uppercase}
 #hub .stage{position:absolute;inset:0}
-/* 立体月球：灰阶球体 + 环形山纹理 + 缓转（黑白简约） */
+/* 大半月球：整圆月盘栖于右下角、约半轮露出纸面 + 环形山缓转（黑白简约） */
 #hub .moon{position:absolute;border-radius:50%;overflow:hidden;pointer-events:none;z-index:100;
-  background:radial-gradient(circle at 33% 30%,#f1f0ed 0%,#c6c5c1 46%,#908f8c 76%,#5b5a57 100%);
-  box-shadow:0 30px 80px rgba(0,0,0,.30),inset 0 0 70px rgba(0,0,0,.34),inset 0 10px 34px rgba(255,255,255,.16)}
+  background:radial-gradient(circle at 30% 26%,#f2f1ee 0%,#cdccc8 42%,#8f8e8a 72%,#54534f 100%);
+  box-shadow:0 0 130px rgba(28,28,28,.16),inset -70px -100px 180px rgba(0,0,0,.38),inset 26px 34px 80px rgba(255,255,255,.12)}
 #hub .moon::after{content:"";position:absolute;inset:0;border-radius:50%;
-  box-shadow:inset 0 0 60px rgba(0,0,0,.30)}
+  box-shadow:inset 0 0 90px rgba(0,0,0,.26)}
 #hub .moon .moon-surface{position:absolute;inset:0;border-radius:50%;mix-blend-mode:multiply;opacity:.5;
   background:
     radial-gradient(circle at 60% 35%,rgba(64,64,64,.32),rgba(64,64,64,0) 7%),
@@ -154,9 +154,19 @@ body{
     radial-gradient(circle at 27% 44%,rgba(64,64,64,.22),rgba(64,64,64,0) 5%),
     radial-gradient(circle at 53% 53%,rgba(64,64,64,.20),rgba(64,64,64,0) 8%),
     radial-gradient(circle at 80% 48%,rgba(64,64,64,.18),rgba(64,64,64,0) 5%);
-  animation:moonspin 160s linear infinite}
+  animation:moonspin 200s linear infinite}
 @keyframes moonspin{to{transform:rotate(360deg)}}
-#hub .card{position:absolute;left:0;top:0;width:148px;height:196px;border-radius:2px;overflow:hidden;cursor:pointer;
+/* 环月轨道（双环）+ 沿环弧形文字 + 纸面星点 */
+#hub .orbit,#hub .orbit2{position:absolute;border-radius:50%;pointer-events:none;z-index:90;
+  border:1px solid rgba(28,28,28,.22)}
+#hub .orbit2{border-color:rgba(28,28,28,.10)}
+#hub .ringtext{position:absolute;pointer-events:none;z-index:91;opacity:.55;
+  animation:ringspin 280s linear infinite;transform-origin:50% 50%}
+#hub .ringtext text{font-family:var(--mono);font-size:11px;letter-spacing:4px;fill:rgba(28,28,28,.6)}
+#hub .ringtext textPath{dominant-baseline:middle}
+@keyframes ringspin{to{transform:rotate(360deg)}}
+#hub .stars{position:absolute;inset:0;pointer-events:none;z-index:2}
+#hub .stars span{position:absolute;border-radius:50%;background:#1c1c1c}
   border:1px solid rgba(30,30,30,.28);background:linear-gradient(165deg,var(--paper) 0%,var(--paper-edge) 100%);
   box-shadow:0 10px 30px rgba(0,0,0,.22),inset 0 0 18px rgba(0,0,0,.08);
   transition:border-color .4s ease,box-shadow .4s ease;
@@ -171,7 +181,7 @@ body{
 #hub .card.front{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink),0 18px 44px rgba(0,0,0,.28)}
 #hub .card.front .lab{color:var(--ink)}
 #hub .card.front .enter{opacity:1}
-#hub .hub-tip{position:absolute;bottom:5.5vh;left:0;right:0;text-align:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--faint);pointer-events:none;z-index:4}
+#hub .hub-tip{position:absolute;bottom:5.5vh;left:6vw;text-align:left;max-width:46%;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--faint);pointer-events:none;z-index:4}
 @media (max-width:680px){
   #hub .card{width:116px;height:154px;}
   #hub .card .thumb svg{width:50%}
@@ -183,6 +193,7 @@ body{
 @media(prefers-reduced-motion:reduce){
   .poster,#intro,#hub,.back,.phint{transition:none}
   #intro .frag{display:none}
+  #hub .ringtext,#hub .moon .moon-surface{animation:none}
 }
 </style>
 </head>
@@ -251,7 +262,7 @@ body{
   <div class="skip-hint">轻触任意处进入</div>
 </div>
 
-<!-- 半圆页面选择枢纽：开场结束后进入，半圆一直旋转，轻触卡片进入 -->
+<!-- 半圆页面选择枢纽：开场结束后进入，半圆形月盘自转，卡片沿弧滑动，轻触卡片进入 -->
 <div id="hub" aria-hidden="true">
   <div class="hub-head">
     <div class="h">今天 · 明天 · 后天</div>
@@ -259,9 +270,13 @@ body{
     <div class="s">Choose a Chapter · 轻触卡片进入</div>
   </div>
   <div class="stage">
+    <div class="orbit2"></div>
+    <div class="orbit"></div>
+    <svg class="ringtext" xmlns="http://www.w3.org/2000/svg"><defs><path id="rtp" d=""></path></defs><text><textPath href="#rtp" startOffset="0"></textPath></text></svg>
+    <div class="stars" id="stars"></div>
     <div class="moon"><div class="moon-surface"></div></div>
   </div>
-  <div class="hub-tip">上下滚动 / 滚轮 转动半圆 · 轻触卡片进入 · 再轻触页面返回</div>
+  <div class="hub-tip">上下滚动 / 滚轮 转动月环 · 轻触卡片进入 · 再轻触页面返回</div>
 </div>
 
 <!-- Deck -->
@@ -393,6 +408,19 @@ body{
       c.addEventListener('click',function(){ if(hubDragged){hubDragged=false;return;} enterHub(i); });
       stage.appendChild(c); p.el=c;
     });
+    /* 沿环弧形文字（参考：环形轨道上的字） */
+    var rt=hubEl.querySelector('.ringtext textPath');
+    if(rt){var rs='今天 · 明天 · 后天 · WHAT SETS THEM APART · STARS DIE BUT LIGHT REMAINS · ';
+      rt.textContent=Array(8).join(rs)+rs;}
+    /* 纸面星点（参考：星夜），避开月球角落 */
+    var st=hubEl.querySelector('#stars');
+    if(st){for(var s=0;s<34;s++){var d=document.createElement('span');
+      var ss=(Math.random()*1.6+0.8).toFixed(1);
+      d.style.width=ss+'px';d.style.height=ss+'px';
+      d.style.left=(Math.random()*62).toFixed(1)+'%';
+      d.style.top=(Math.random()*68).toFixed(1)+'%';
+      d.style.opacity=(Math.random()*0.16+0.08).toFixed(2);
+      st.appendChild(d);}}
     hubEl.addEventListener('wheel',function(e){e.preventDefault();rot+=e.deltaY*0.0016;},{passive:false});
     var lastY=null;
     hubEl.addEventListener('pointerdown',function(e){lastY=e.clientY;hubDragged=false;});
@@ -410,31 +438,45 @@ body{
     if(!lastT)lastT=ts; else rot+=HUB_ROT*(ts-lastT)/1000;
     lastT=ts;
     var W=innerWidth,H=innerHeight;
-    var cx=W/2, cyM=H*0.50;
-    var Rm=Math.min(H*0.30,W*0.36);
-    var Rr=Rm*1.16, tilt=0.55;
-    /* 月球球体尺寸/位置 */
+    /* 大月球栖于右下角，月心在屏外 → 仅半轮（约）露出纸面 */
+    var mcx=W*0.94, mcy=H*1.04;
+    var Rm=Math.min(W*0.66,H*0.58);
+    var Rr=Rm*1.12, Rr2=Rr*1.30;
     var moon=hubEl.querySelector('.moon');
-    if(moon){var d=Rm*2;
-      moon.style.width=d+'px';moon.style.height=d+'px';
-      moon.style.left=(cx-Rm)+'px';moon.style.top=(cyM-Rm)+'px';}
-    var n=HUB_PAGES.length, frontI=-1, frontD=-2;
+    if(moon){var d=Rm*2;moon.style.width=d+'px';moon.style.height=d+'px';
+      moon.style.left=(mcx-Rm)+'px';moon.style.top=(mcy-Rm)+'px';}
+    var orbit=hubEl.querySelector('.orbit');
+    if(orbit){var od=Rr*2;orbit.style.width=od+'px';orbit.style.height=od+'px';
+      orbit.style.left=(mcx-Rr)+'px';orbit.style.top=(mcy-Rr)+'px';}
+    var orbit2=hubEl.querySelector('.orbit2');
+    if(orbit2){var od2=Rr2*2;orbit2.style.width=od2+'px';orbit2.style.height=od2+'px';
+      orbit2.style.left=(mcx-Rr2)+'px';orbit2.style.top=(mcy-Rr2)+'px';}
+    var rt=hubEl.querySelector('.ringtext');
+    if(rt){var rsz=Rr2*2;rt.style.width=rsz+'px';rt.style.height=rsz+'px';
+      rt.style.left=(mcx-Rr2)+'px';rt.style.top=(mcy-Rr2)+'px';
+      var rpath=hubEl.querySelector('#rtp');
+      if(rpath)rpath.setAttribute('d','M 0 '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 '+(2*Rr2)+' '+Rr2+' A '+Rr2+' '+Rr2+' 0 1 1 0 '+Rr2);}
+    /* 卡片沿环弧滑动：朝向屏幕中心一侧可见，绕向月角处淡出 */
+    var n=HUB_PAGES.length, frontI=-1, frontD=1e9;
+    var a0=Math.atan2(H*0.5-mcy, W*0.5-mcx);
     HUB_PAGES.forEach(function(p,i){
       var a=((Math.PI/2 - i*(2*Math.PI/n))+rot)%(2*Math.PI); if(a<0)a+=2*Math.PI;
-      var front=Math.sin(a);                 // 近侧(+) / 远侧(-)
-      var x=cx+Rr*Math.cos(a);
-      var y=cyM+Rr*Math.sin(a)*tilt;
+      var ca=Math.cos(a);
+      var x=mcx+Rr*Math.cos(a);
+      var y=mcy+Rr*Math.sin(a);
+      var vis=ca<-0.05?1:(ca<0.45?1-(ca+0.05)/0.5:0);
+      if(x<-90||x>W+90||y<-90||y>H+90)vis=0;
       var c=p.el;
-      var onFront=front>-0.15;
-      var sc=0.42+0.62*Math.max(0,front);
-      var op=onFront?(0.12+0.88*Math.max(0,(front+0.15)/1.15)):0;
+      var sc=0.68+0.36*vis;
+      var op=vis;
       var cw=c.offsetWidth||148, chh=c.offsetHeight||196;
       c.style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-chh/2).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
       c.style.opacity=op.toFixed(3);
-      c.style.zIndex=onFront?Math.round(200+front*100):40;
-      c.style.pointerEvents=onFront?'auto':'none';
+      c.style.zIndex=200+Math.round(vis*100);
+      c.style.pointerEvents=vis>0.5?'auto':'none';
       c.classList.remove('front');
-      if(front>frontD){frontD=front;frontI=i;}
+      var dA=Math.abs(Math.atan2(Math.sin(a-a0),Math.cos(a-a0)));
+      if(vis>0.15&&dA<frontD){frontD=dA;frontI=i;}
     });
     if(frontI>=0){var fc=HUB_PAGES[frontI].el;fc.classList.add('front');fc.style.zIndex=320;curFront=frontI;}
     hubRAF=requestAnimationFrame(renderHub);
