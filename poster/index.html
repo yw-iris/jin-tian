@@ -190,34 +190,37 @@ body{
 @keyframes ringspin{to{transform:rotate(360deg)}}
 #hub .stars{position:absolute;inset:0;pointer-events:none;z-index:2}
 #hub .stars span{position:absolute;border-radius:50%;background:#ececea}
-/* 环上星球卡片：圆形小月球（灰阶明暗 + 环形山缓转），章节图形居中，标签悬于星球下方 */
+/* 环上星球卡片：真实月面小月球（底图同源摄影纹理 + 相位明暗），章节图形居中，标签悬于星球下方 */
 #hub .card{position:absolute;left:0;top:0;width:132px;height:180px;cursor:pointer;
   background:none;border:none;box-shadow:none;
   will-change:transform,opacity;-webkit-tap-highlight-color:transparent}
 #hub .card .disc{position:absolute;left:50%;top:0;width:110px;height:110px;margin-left:-55px;
   border-radius:50%;overflow:hidden;
-  background:radial-gradient(circle at 32% 26%,#f4f3f0 0%,#d6d5d1 40%,#9b9a95 72%,#5d5c58 100%);
+  background:#8b8b87;
   border:1px solid rgba(240,240,238,.26);
-  box-shadow:inset -16px -22px 36px rgba(0,0,0,.42),inset 8px 12px 24px rgba(255,255,255,.14),0 14px 34px rgba(0,0,0,.55);
+  box-shadow:0 14px 34px rgba(0,0,0,.55);
   transition:box-shadow .4s ease}
-#hub .card .craters{position:absolute;inset:0;border-radius:50%;mix-blend-mode:multiply;opacity:.5;
-  background:
-    radial-gradient(circle at 62% 28%,rgba(58,58,58,.42),rgba(58,58,58,0) 13%),
-    radial-gradient(circle at 34% 56%,rgba(58,58,58,.36),rgba(58,58,58,0) 15%),
-    radial-gradient(circle at 70% 66%,rgba(58,58,58,.32),rgba(58,58,58,0) 11%),
-    radial-gradient(circle at 24% 30%,rgba(58,58,58,.30),rgba(58,58,58,0) 9%),
-    radial-gradient(circle at 52% 78%,rgba(58,58,58,.26),rgba(58,58,58,0) 10%),
-    radial-gradient(circle at 82% 46%,rgba(58,58,58,.24),rgba(58,58,58,0) 8%),
-    radial-gradient(circle at 44% 14%,rgba(58,58,58,.22),rgba(58,58,58,0) 7%);
+/* 月面摄影纹理（裁自底图大月），极缓自转 */
+#hub .card .craters{position:absolute;inset:-18%;border-radius:0;mix-blend-mode:normal;opacity:1;
+  background:url('moon-tex.jpg') center/cover no-repeat;
   animation:planetspin 160s linear infinite}
 @keyframes planetspin{to{transform:rotate(360deg)}}
+/* 球体明暗 + 相位阴影：非正面呈凸月/残月（受光面朝右上，同参考图），正面近满月 */
+#hub .card .disc::after{content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 70% 28%,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 42%),
+             radial-gradient(circle at 18% 88%,rgba(0,0,0,.72) 8%,rgba(0,0,0,.38) 42%,rgba(0,0,0,0) 68%);
+  box-shadow:inset -14px -18px 30px rgba(0,0,0,.5),inset 6px 8px 18px rgba(255,255,255,.16)}
+#hub .card.front .disc::after{
+  background:radial-gradient(circle at 62% 34%,rgba(255,255,255,.12) 0%,rgba(255,255,255,0) 50%),
+             radial-gradient(circle at 12% 92%,rgba(0,0,0,.34) 6%,rgba(0,0,0,.14) 40%,rgba(0,0,0,0) 66%);
+  box-shadow:inset -10px -14px 26px rgba(0,0,0,.38),inset 6px 8px 18px rgba(255,255,255,.18)}
 #hub .card .thumb{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
 #hub .card .thumb svg{width:50%;height:auto;opacity:.85;color:#262626}
 #hub .card .thumb .glyph{font-family:var(--serif);font-weight:500;font-size:40px;color:#262626;text-shadow:0 0 14px rgba(244,243,240,.8)}
 #hub .card .enter{position:absolute;top:-22px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:#f0f0ee;opacity:0;transition:opacity .4s;text-transform:uppercase}
 #hub .card .lab{position:absolute;left:0;right:0;top:120px;text-align:center;font-family:var(--serif);font-weight:500;font-size:16px;letter-spacing:.16em;color:#ececea;text-shadow:0 1px 10px rgba(0,0,0,.85)}
 #hub .card .en{position:absolute;left:0;right:0;top:144px;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:#949494;text-transform:uppercase}
-#hub .card.front .disc{box-shadow:0 0 0 2px rgba(242,242,240,.92),0 18px 44px rgba(0,0,0,.5),inset -16px -22px 36px rgba(0,0,0,.36),inset 8px 12px 24px rgba(255,255,255,.14)}
+#hub .card.front .disc{box-shadow:0 0 0 2px rgba(242,242,240,.92),0 18px 44px rgba(0,0,0,.5)}
 #hub .card.front .enter{opacity:1}
 #hub .hub-tip{position:absolute;bottom:5.5vmin;left:6vmax;text-align:left;max-width:46%;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:#8a8a8a;pointer-events:none;z-index:4}
 @media (max-width:680px){
