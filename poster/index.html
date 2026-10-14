@@ -72,30 +72,17 @@ body{
   .intro-tree .cap,.intro-title,.intro-sub,.intro-hint{opacity:.7;transform:none;filter:none;animation:none}
 }
 
-/* ===== 索引（极简）===== */
-#index{position:fixed;inset:0;z-index:180;display:none;align-items:center;justify-content:center;
-  background:rgba(225,220,212,.92);backdrop-filter:blur(2px)}
-#index.open{display:flex}
-#index .rail{display:flex;gap:clamp(14px,3vw,30px);flex-wrap:wrap;justify-content:center;
-  max-width:680px;padding:24px}
-#index .ent{cursor:pointer;text-align:center;width:clamp(72px,16vw,108px);
-  opacity:.8;transition:opacity .3s,transform .3s}
-#index .ent:hover{opacity:1;transform:translateY(-3px)}
-#index .ent .num{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--dim)}
-#index .ent .zh{font-family:var(--serif);font-size:clamp(17px,4vw,22px);letter-spacing:.14em;margin-top:8px;color:var(--ink)}
-#index .ent .en{font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--faint);text-transform:uppercase;margin-top:5px}
-#index .ent .swatch{width:100%;height:3px;margin-top:10px;background:var(--sw,var(--acc));opacity:.85}
-
-/* ===== Deck：全屏逐屏海报 ===== */
-#deck{position:fixed;inset:0;z-index:2;background:var(--paper)}
-.poster{position:absolute;inset:0;opacity:0;pointer-events:none;
-  transition:opacity .8s ease;overflow:auto}
-.poster.active{opacity:1;pointer-events:auto}
+/* ===== Deck：竖向滚动，逐屏海报（scroll-snap 滚动式）===== */
+#deck{position:fixed;inset:0;z-index:2;overflow-y:auto;overflow-x:hidden;
+  scroll-snap-type:y mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;
+  background:var(--paper)}
+.slide{position:relative;height:100vh;width:100%;flex:0 0 auto;
+  scroll-snap-align:start;display:flex;align-items:center;justify-content:center}
+.poster{position:relative;width:100%;height:100%;overflow:auto}
 /* 宽屏：居中 3:5 纸卡 + 纸垫 */
 @media(min-aspect-ratio:3/5){
   #deck{background:var(--mat)}
-  .poster{inset:auto;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:calc(94vh*3/5);height:94vh;
+  .poster{width:calc(94vh*3/5);height:94vh;
     box-shadow:0 24px 60px rgba(40,34,26,.28),0 2px 0 rgba(255,255,255,.4) inset;
     background:radial-gradient(135% 110% at 38% 30%,var(--paper) 0%,var(--paper2) 62%,var(--paper-edge) 100%)}
 }
@@ -156,11 +143,7 @@ body{
   color:var(--acc);opacity:.85}
 .p-end .copy{bottom:12%;left:12%}
 
-/* 顶部返回 + 底部索引点 */
-.back{position:fixed;top:16px;left:16px;z-index:120;font-family:var(--mono);letter-spacing:.22em;
-  font-size:11px;color:var(--ink);opacity:.5;cursor:pointer;display:none;
-  border:1px solid rgba(60,54,44,.28);padding:8px 14px;border-radius:30px;background:rgba(232,228,220,.5);backdrop-filter:blur(3px)}
-.back.show{display:block}
+/* 底部索引点（可点击跳转）*/
 .dots{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:120;display:flex;
   gap:14px;opacity:0;transition:opacity .6s}
 .dots.show{opacity:.9}
@@ -233,23 +216,14 @@ body{
   <svg class="intro-tree" viewBox="0 0 200 240"><use href="#tree"/></svg>
   <div class="intro-title">今天 · 明天 · 后天</div>
   <div class="intro-sub">What sets them apart</div>
-  <div class="intro-hint">轻触任意处 · 进入</div>
+  <div class="intro-hint">轻触进入 · 滚动浏览</div>
 </div>
 
-<!-- 索引 -->
-<div id="index">
-  <div class="rail">
-    <div class="ent" data-i="0" style="--sw:#dfe8ef"><div class="num">00</div><div class="zh">封面</div><div class="en">Cover</div><div class="swatch"></div></div>
-    <div class="ent" data-i="1" style="--sw:#6f7f95"><div class="num">01</div><div class="zh">瘾症</div><div class="en">Persona</div><div class="swatch"></div></div>
-    <div class="ent" data-i="2" style="--sw:#b4bdc6"><div class="num">02</div><div class="zh">须知</div><div class="en">Notice</div><div class="swatch"></div></div>
-    <div class="ent" data-i="3" style="--sw:#c2ccd5"><div class="num">03</div><div class="zh">尾声</div><div class="en">End</div><div class="swatch"></div></div>
-  </div>
-</div>
-
-<!-- Deck -->
+<!-- Deck：竖向滚动 -->
 <div id="deck">
 
   <!-- 0 封面 -->
+  <div class="slide">
   <section class="poster p-cover" data-i="0">
     <div class="focal">
       <div class="glow"></div>
@@ -262,8 +236,10 @@ body{
       <div class="en" style="margin-top:16px">What sets them apart</div>
     </div>
   </section>
+  </div>
 
   <!-- 1 瘾症 -->
+  <div class="slide">
   <section class="poster p-persona" data-i="1">
     <div class="focal">
       <svg viewBox="0 0 120 120"><use href="#branch" style="color:var(--acc)"/></svg>
@@ -282,8 +258,10 @@ body{
       <p class="script" style="margin-top:20px">你向前走吧<br>我想留在有你的昨天</p>
     </div>
   </section>
+  </div>
 
   <!-- 2 须知 -->
+  <div class="slide">
   <section class="poster p-notice" data-i="2">
     <div class="copy">
       <div class="rule"></div>
@@ -308,8 +286,10 @@ body{
     </div>
     <div class="sig">以上归属权为瘾症</div>
   </section>
+  </div>
 
   <!-- 3 尾声 -->
+  <div class="slide">
   <section class="poster p-end" data-i="3">
     <div class="focal">
       <div class="horizon"></div>
@@ -325,10 +305,10 @@ body{
       <p class="credit">瘾症 · by ivy</p>
     </div>
   </section>
+  </div>
 
 </div>
 
-<div class="back" id="back">‹ 索引</div>
 <div class="dots" id="dots">
   <div class="dot" data-i="0"></div><div class="dot" data-i="1"></div>
   <div class="dot" data-i="2"></div><div class="dot" data-i="3"></div>
@@ -339,58 +319,43 @@ body{
   'use strict';
   var REDUCE=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
 
+  var deck=document.getElementById('deck');
   var posters=[].slice.call(document.querySelectorAll('.poster'));
   var N=posters.length;
-  var cur=0,started=false,indexOpen=false;
+  var cur=-1,started=false;
   var intro=document.getElementById('intro');
-  var indexEl=document.getElementById('index');
-  var back=document.getElementById('back');
   var dotsWrap=document.getElementById('dots');
   var dots=[].slice.call(dotsWrap.querySelectorAll('.dot'));
 
-  function show(i){
-    i=((i%N)+N)%N;
-    posters.forEach(function(p,k){p.classList.toggle('active',k===i);});
+  function setActive(i){
+    if(i===cur)return;
     cur=i;
-    back.classList.toggle('show',i!==0);
+    posters.forEach(function(p,k){p.classList.toggle('active',k===i);});
     dots.forEach(function(d,k){d.classList.toggle('on',k===i);});
   }
-  function openIndex(){indexOpen=true;indexEl.classList.add('open');}
-  function closeIndex(){indexOpen=false;indexEl.classList.remove('open');}
+  function go(i){i=Math.max(0,Math.min(N-1,i));posters[i].scrollIntoView({behavior:REDUCE?'auto':'smooth'});}
 
-  /* 索引点 / 返回 / 条目 */
-  dots.forEach(function(d){d.addEventListener('click',function(){closeIndex();show(+d.dataset.i);});});
-  back.addEventListener('click',openIndex);
-  [].slice.call(indexEl.querySelectorAll('.ent')).forEach(function(e){
-    e.addEventListener('click',function(){closeIndex();show(+e.dataset.i);});
-  });
+  /* 底部点：点击平滑跳转 */
+  dots.forEach(function(d){d.addEventListener('click',function(){go(+d.dataset.i);});});
 
-  /* 轻点任意处：封面→索引；其余→下一屏 */
-  var pX=0,pY=0,pT=0;
-  function isUI(t){return t.closest&&t.closest('.back,.dots,#index');}
-  document.getElementById('deck').addEventListener('pointerdown',function(e){pX=e.clientX;pY=e.clientY;pT=Date.now();},{passive:true});
-  document.getElementById('deck').addEventListener('pointerup',function(e){
-    if(indexOpen)return;
-    var dx=e.clientX-pX,dy=e.clientY-pY,dt=Date.now()-pT;
-    if(Math.hypot(dx,dy)<14&&dt<600&&!isUI(e.target)){
-      if(cur===0)openIndex();else show(cur+1);
-    }
-  },{passive:true});
+  /* 滚动监听：谁最居中谁是当前屏 */
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(en.isIntersecting && en.intersectionRatio>=0.55) setActive(+en.target.dataset.i);
+      });
+    },{root:deck,threshold:[0.55,0.75]});
+    posters.forEach(function(p){io.observe(p);});
+  }
 
-  /* 滚轮 */
-  document.getElementById('deck').addEventListener('wheel',function(e){
-    if(indexOpen)return;
-    if(e.deltaY>12)show(cur+1);else if(e.deltaY<-12)show(cur-1);
-  },{passive:true});
-
-  /* 键盘 */
+  /* 键盘：方向键 / 空格 / PageUp·Down / Home·End 滚动切换 */
   addEventListener('keydown',function(e){
     if(!started)return;
-    if(e.key==='Escape'){closeIndex();return;}
-    if(indexOpen){if(e.key==='Enter'||e.key===' '){closeIndex();e.preventDefault();}return;}
-    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){if(cur===0)openIndex();else show(cur+1);e.preventDefault();}
-    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){show(cur-1);e.preventDefault();}
-    else if(e.key==='Enter'){openIndex();e.preventDefault();}
+    var k=e.key;
+    if(k==='ArrowDown'||k==='PageDown'||k===' '){go(cur+1);e.preventDefault();}
+    else if(k==='ArrowUp'||k==='PageUp'){go(cur-1);e.preventDefault();}
+    else if(k==='Home'){go(0);e.preventDefault();}
+    else if(k==='End'){go(N-1);e.preventDefault();}
   });
 
   /* 开场 */
@@ -399,11 +364,12 @@ body{
     intro.classList.add('done');
     setTimeout(function(){intro.style.display='none';},1100);
     dotsWrap.classList.add('show');
-    show(0);
+    deck.scrollTo({top:0,behavior:'auto'});
+    setActive(0);
   }
   intro.addEventListener('click',finish);
   intro.addEventListener('touchend',finish,{passive:true});
-  if(REDUCE){intro.style.display='none';started=true;dotsWrap.classList.add('show');show(0);}
+  if(REDUCE){intro.style.display='none';started=true;dotsWrap.classList.add('show');setActive(0);}
   else setTimeout(finish,6000);
 })();
 </script>
