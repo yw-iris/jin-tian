@@ -167,27 +167,44 @@ body{
 @keyframes ringspin{to{transform:rotate(360deg)}}
 #hub .stars{position:absolute;inset:0;pointer-events:none;z-index:2}
 #hub .stars span{position:absolute;border-radius:50%;background:#1c1c1c}
-  border:1px solid rgba(30,30,30,.28);background:linear-gradient(165deg,var(--paper) 0%,var(--paper-edge) 100%);
-  box-shadow:0 10px 30px rgba(0,0,0,.22),inset 0 0 18px rgba(0,0,0,.08);
-  transition:border-color .4s ease,box-shadow .4s ease;
-  will-change:transform,opacity}
-#hub .card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(234,234,232,.04) 30%,rgba(210,210,207,.78) 100%)}
-#hub .card .thumb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-#hub .card .thumb svg{width:54%;height:auto;opacity:.82}
-#hub .card .thumb .glyph{font-family:var(--serif);font-weight:500;font-size:52px;color:var(--ink);text-shadow:0 0 18px rgba(0,0,0,.18)}
-#hub .card .enter{position:absolute;top:11px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--dim);opacity:0;transition:opacity .4s;text-transform:uppercase}
-#hub .card .lab{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-family:var(--serif);font-weight:500;font-size:18px;letter-spacing:.14em;color:var(--ink);text-shadow:0 1px 8px rgba(234,234,232,.9);transition:color .4s,text-shadow .4s}
-#hub .card .en{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase}
-#hub .card.front{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink),0 18px 44px rgba(0,0,0,.28)}
-#hub .card.front .lab{color:var(--ink)}
+/* 环上星球卡片：圆形小月球（灰阶明暗 + 环形山缓转），章节图形居中，标签悬于星球下方 */
+#hub .card{position:absolute;left:0;top:0;width:132px;height:180px;cursor:pointer;
+  background:none;border:none;box-shadow:none;
+  will-change:transform,opacity;-webkit-tap-highlight-color:transparent}
+#hub .card .disc{position:absolute;left:50%;top:0;width:110px;height:110px;margin-left:-55px;
+  border-radius:50%;overflow:hidden;
+  background:radial-gradient(circle at 32% 26%,#f4f3f0 0%,#d6d5d1 40%,#9b9a95 72%,#5d5c58 100%);
+  border:1px solid rgba(30,30,30,.24);
+  box-shadow:inset -16px -22px 36px rgba(0,0,0,.36),inset 8px 12px 24px rgba(255,255,255,.14),0 12px 30px rgba(0,0,0,.16);
+  transition:box-shadow .4s ease}
+#hub .card .craters{position:absolute;inset:0;border-radius:50%;mix-blend-mode:multiply;opacity:.5;
+  background:
+    radial-gradient(circle at 62% 28%,rgba(58,58,58,.42),rgba(58,58,58,0) 13%),
+    radial-gradient(circle at 34% 56%,rgba(58,58,58,.36),rgba(58,58,58,0) 15%),
+    radial-gradient(circle at 70% 66%,rgba(58,58,58,.32),rgba(58,58,58,0) 11%),
+    radial-gradient(circle at 24% 30%,rgba(58,58,58,.30),rgba(58,58,58,0) 9%),
+    radial-gradient(circle at 52% 78%,rgba(58,58,58,.26),rgba(58,58,58,0) 10%),
+    radial-gradient(circle at 82% 46%,rgba(58,58,58,.24),rgba(58,58,58,0) 8%),
+    radial-gradient(circle at 44% 14%,rgba(58,58,58,.22),rgba(58,58,58,0) 7%);
+  animation:planetspin 160s linear infinite}
+@keyframes planetspin{to{transform:rotate(360deg)}}
+#hub .card .thumb{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center}
+#hub .card .thumb svg{width:50%;height:auto;opacity:.85;color:#262626}
+#hub .card .thumb .glyph{font-family:var(--serif);font-weight:500;font-size:40px;color:#262626;text-shadow:0 0 14px rgba(244,243,240,.8)}
+#hub .card .enter{position:absolute;top:-22px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--ink);opacity:0;transition:opacity .4s;text-transform:uppercase}
+#hub .card .lab{position:absolute;left:0;right:0;top:120px;text-align:center;font-family:var(--serif);font-weight:500;font-size:16px;letter-spacing:.16em;color:var(--ink);text-shadow:0 1px 8px rgba(234,234,232,.9)}
+#hub .card .en{position:absolute;left:0;right:0;top:144px;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase}
+#hub .card.front .disc{box-shadow:0 0 0 2px rgba(28,28,28,.9),0 18px 44px rgba(0,0,0,.28),inset -16px -22px 36px rgba(0,0,0,.36),inset 8px 12px 24px rgba(255,255,255,.14)}
 #hub .card.front .enter{opacity:1}
 #hub .hub-tip{position:absolute;bottom:5.5vh;left:6vw;text-align:left;max-width:46%;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--faint);pointer-events:none;z-index:4}
 @media (max-width:680px){
-  #hub .card{width:116px;height:154px;}
-  #hub .card .thumb svg{width:50%}
-  #hub .card .lab{font-size:15px;bottom:26px;}
-  #hub .card .en{bottom:12px;}
-  #hub .card .thumb .glyph{font-size:42px}
+  #hub .card{width:106px;height:150px}
+  #hub .card .disc{width:88px;height:88px;margin-left:-44px}
+  #hub .card .thumb svg{width:48%}
+  #hub .card .thumb .glyph{font-size:32px}
+  #hub .card .lab{font-size:13.5px;top:98px}
+  #hub .card .en{font-size:7.5px;top:118px}
+  #hub .card .enter{top:-18px}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -404,7 +421,7 @@ body{
       else if(p.svg==='branch') thumb='<svg viewBox="0 0 120 120" style="color:'+p.acc+'"><use href="#branch"/></svg>';
       else if(p.svg==='flake') thumb='<svg viewBox="0 0 100 100" style="color:'+p.acc+'"><use href="#flake"/></svg>';
       else thumb='<div class="glyph">'+p.glyph+'</div>';
-      c.innerHTML='<div class="scrim"></div><div class="enter">ENTER ›</div><div class="thumb">'+thumb+'</div><div class="lab">'+p.zh+'</div><div class="en">'+p.en+'</div>';
+      c.innerHTML='<div class="disc"><div class="craters"></div><div class="thumb">'+thumb+'</div></div><div class="enter">ENTER ›</div><div class="lab">'+p.zh+'</div><div class="en">'+p.en+'</div>';
       c.addEventListener('click',function(){ if(hubDragged){hubDragged=false;return;} enterHub(i); });
       stage.appendChild(c); p.el=c;
     });
