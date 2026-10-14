@@ -445,7 +445,7 @@ body{
   }
 
   /* ===== 半圆枢纽：开场结束后进入，滚动/自转 ===== */
-  var hubOpen=false,fromHub=false,rot=0,rotT=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false;
+  var hubOpen=false,fromHub=false,rot=0,vel=0,dragVel=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false;
   var HUB_ROT=REDUCE?0:0.16; // 半圆自转角速度 rad/s
   function buildHub(){
     var stage=hubEl.querySelector('.stage');
@@ -481,15 +481,23 @@ body{
       d.style.top=(Math.random()*68).toFixed(1)+'%';
       d.style.opacity=(Math.random()*0.16+0.08).toFixed(2);
       st.appendChild(d);}}
-    hubEl.addEventListener('wheel',function(e){e.preventDefault();rotT=Math.max(-0.05,Math.min(0.05,rotT+e.deltaY*0.0008));},{passive:false});
+    /* 自由轮盘：滚轮/拖动/方向键累积角速度，拖拽释放带惯性；摩擦衰减，停在任意角度 */
+    var WHEEL_SENS=0.00010, DRAG_SENS=0.0042, KEY_STEP=0.12;
+    function addVel(d){vel=Math.max(-0.26,Math.min(0.26,vel+d));}
+    hubEl.addEventListener('wheel',function(e){e.preventDefault();addVel(e.deltaY*WHEEL_SENS);},{passive:false});
     var lastY=null;
-    hubEl.addEventListener('pointerdown',function(e){lastY=e.clientY;hubDragged=false;});
-    hubEl.addEventListener('pointermove',function(e){ if(lastY!==null){var d=lastY-e.clientY;rotT=Math.max(-0.05,Math.min(0.05,rotT+d*0.0016));if(Math.abs(d)>8)hubDragged=true;lastY=e.clientY;} },{passive:false});
-    hubEl.addEventListener('pointerup',function(){lastY=null;});
+    hubEl.addEventListener('pointerdown',function(e){lastY=e.clientY;dragVel=0;hubDragged=false;});
+    hubEl.addEventListener('pointermove',function(e){
+      if(lastY!==null){var d=lastY-e.clientY;
+        rot+=d*DRAG_SENS; dragVel=d*DRAG_SENS; vel=0;
+        if(Math.abs(d)>6)hubDragged=true; lastY=e.clientY;}
+    },{passive:false});
+    hubEl.addEventListener('pointerup',function(){lastY=null;vel=dragVel;});
+    hubEl.addEventListener('pointercancel',function(){lastY=null;});
     addEventListener('keydown',function(e){
       if(!hubOpen)return;
-      if(e.key==='ArrowRight'||e.key==='ArrowDown'){rotT=Math.max(-0.05,Math.min(0.05,rotT+0.04));e.preventDefault();}
-      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){rotT=Math.max(-0.05,Math.min(0.05,rotT-0.04));e.preventDefault();}
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){addVel(KEY_STEP);e.preventDefault();}
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){addVel(-KEY_STEP);e.preventDefault();}
       else if(e.key==='Enter'||e.key===' '){enterHub(curFront);e.preventDefault();}
     });
   }
@@ -497,8 +505,8 @@ body{
     if(!hubOpen){hubRAF=null;return;}
     if(!lastT)lastT=ts;
     lastT=ts;
-    /* 摇摆：输入驱动 rotT（有界 ±0.16rad），缓慢回弹至图中标准排列 */
-    rotT*=0.985; rot+=(rotT-rot)*0.10;
+    /* 自由轮盘：rot 累积角速度 vel，摩擦衰减（限幅在几何计算后按视口自适应处理） */
+    rot+=vel; vel*=0.93; if(Math.abs(vel)<1e-5)vel=0;
     var W=VW(),H=VH();
     /* 轨道几何严格对齐底图：底图 cover 锚定 right bottom，大月拟合 center(1369,1274) R=918 (1440x673) */
     var IW=1440, IH=673, s=Math.max(W/IW,H/IH);
@@ -540,6 +548,27 @@ body{
       angles=[]; sizes=[];
       for(var i2=0;i2<n;i2++){angles.push(aLo+i2*(aHi-aLo)/(n-1));
         sizes.push(Math.max(48,2*(21+11.3*i2/(n-1))*s*1.06));}}
+    /* 自适应摆动范围：扫描 rot，取包含 0 的「月链全在屏内」连续区间——保证整条链始终可见、静止时对齐底图 */
+    if(hubEl.__bw!==W||hubEl.__bh!==H){
+      hubEl.__bw=W; hubEl.__bh=H;
+      var mb=Math.max(20,Rb*0.032), okR=[], rstep=0.02;
+      for(var r=-1.05;r<=1.05;r+=rstep){
+        var ok=true;
+        for(var bi=0;bi<n;bi++){
+          var bx2=POS?POS[bi][0]:mcx+Rr*Math.cos(angles[bi]);
+          var by2=POS?POS[bi][1]:mcy+Rr*Math.sin(angles[bi]);
+          var p0x=bx2-mcx, p0y=by2-mcy, cr=Math.cos(r), sr=Math.sin(r);
+          var xx=mcx+p0x*cr-p0y*sr, yy=mcy+p0x*sr+p0y*cr;
+          if(xx<mb||xx>W-mb||yy<mb||yy>H-mb){ok=false;break;}
+        }
+        okR.push(ok);
+      }
+      var i0=Math.round((0-(-1.05))/rstep), lo=i0, hi=i0;
+      while(lo>0&&okR[lo-1])lo--; while(hi<okR.length-1&&okR[hi+1])hi++;
+      hubEl.__rotLo=-1.05+lo*rstep; hubEl.__rotHi=-1.05+hi*rstep;
+    }
+    var rlo=hubEl.__rotLo, rhi=hubEl.__rotHi;
+    if(rot>rhi){rot=rhi; if(vel>0)vel=0;} else if(rot<rlo){rot=rlo; if(vel<0)vel=0;}
     var ca=Math.cos(rot), sa=Math.sin(rot);
     HUB_PAGES.forEach(function(p,i){
       var d=sizes[i], x, y;
