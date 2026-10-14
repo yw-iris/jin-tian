@@ -430,7 +430,7 @@ body{
   var HUB_PAGES=[
     {id:'cover',  zh:'封面', en:'COVER',   acc:'#2c2c2c', svg:'tree'},
     {id:'persona',zh:'瘾症', en:'PERSONA', acc:'#2c2c2c', svg:'branch'},
-    {id:'notice', zh:'须知', en:'NOTICE',  acc:'#2c2c2c', svg:'glyph', glyph:'知'},
+    {id:'notice', zh:'须知', en:'NOTICE',  acc:'#2c2c2c', svg:'plain'},
     {id:'ending', zh:'尾声', en:'ENDING',  acc:'#2c2c2c', svg:'flake'}
   ];
 
@@ -459,7 +459,7 @@ body{
       if(p.svg==='tree') thumb='<svg viewBox="0 0 200 240"><use href="#tree"/></svg>';
       else if(p.svg==='branch') thumb='<svg viewBox="0 0 120 120" style="color:'+p.acc+'"><use href="#branch"/></svg>';
       else if(p.svg==='flake') thumb='<svg viewBox="0 0 100 100" style="color:'+p.acc+'"><use href="#flake"/></svg>';
-      else thumb='<div class="glyph">'+p.glyph+'</div>';
+      else if(p.svg==='plain') thumb='';
       /* 直接用参考图上的真实小月球贴图（moon1~4.jpg，分别裁自图中小月，含真实相位） */
       c.innerHTML='<div class="disc" style="background-image:url(moon'+(i+1)+'.jpg)"><div class="thumb">'+thumb+'</div></div>'
         +'<div class="enter">ENTER ›</div><div class="lab">'+p.zh+'</div><div class="en">'+p.en+'</div>';
@@ -515,20 +515,24 @@ body{
     rot+=HUB_ROT*dt;
     if(rot<=-Math.PI*2)rot+=Math.PI*2; else if(rot>Math.PI*2)rot-=Math.PI*2;
     var W=VW(),H=VH();
-    /* 与 qing-jiu 一致：月环以屏心为心、持续自转，滚轮/拖动/方向键转动；正反两面、前端高亮 */
-    var cx=W/2, cy=H*0.97;
-    var R=Math.min(H*0.62, W*0.60);
-    var n=HUB_PAGES.length, frontI=-1, frontD=1e9;
+    /* 旋转轴线 = 参考图右下角大半月的圆心（底图 cover 锚定 right bottom，大月拟合 center(1369,1274) R=918 / 1440x673）。
+       月群绕此圆心公转、沿其上半弧（屏上可见区）流转，与参考图月链一致；弧两端淡出以避免回卷跳变。
+       自转/滚轮/拖动/方向键均驱动 rot，沿弧流动。 */
+    var IW=1440, IH=673, s=Math.max(W/IW,H/IH);
+    var mcx=W-71*s, mcy=H+601*s;          /* 大月圆心（屏外右下） */
+    var Rr=1270*s;                        /* 小月链轨道半径（参考图 ≈1.388×918） */
+    var ARC_LO=205*Math.PI/180, ARC_HI=275*Math.PI/180, SPAN=ARC_HI-ARC_LO;
+    var n=HUB_PAGES.length, frontI=-1, frontD=-1;
     HUB_PAGES.forEach(function(p,i){
-      var a=((Math.PI - i*(Math.PI*2/n)) + rot)%(Math.PI*2);
-      if(a<0)a+=Math.PI*2;
-      var s=Math.sin(a);
-      var x=cx+R*Math.cos(a), y=cy-R*s;
-      var onArc=a<=Math.PI+0.02;
-      var co=Math.max(0,s);                 /* 越靠顶端越亮越大（与小月相位一致） */
-      var op=onArc?(0.22+0.78*co):0;
-      var sc=0.62+0.5*co;
-      var d=Math.max(52, (78*Math.max(0.7,Math.min(1.4,R/520)))*sc);
+      var base=ARC_LO + (i+0.5)*(SPAN/n);
+      var ang=ARC_LO + (((base - rot - ARC_LO) % SPAN) + SPAN) % SPAN;   /* rot 为弧度，沿弧流转并回卷 */
+      var ca=Math.cos(ang), sa=Math.sin(ang);
+      var x=mcx+Rr*ca, y=mcy+Rr*sa;
+      var co=Math.max(0.05,-sa);          /* 越靠弧顶（屏上越高）越亮越大（与小月相位一致） */
+      var t=(ang-ARC_LO)/SPAN;            /* 0..1 沿弧位置，两端淡出 */
+      var ef=Math.max(0,Math.min(1, t/0.16)) * Math.max(0,Math.min(1,(1-t)/0.16));
+      var op=(0.34+0.66*co)*ef;
+      var d=Math.max(44, 58*s*(0.72+0.42*co));
       var c=p.el, disc=c.querySelector('.disc');
       disc.style.width=d.toFixed(1)+'px'; disc.style.height=d.toFixed(1)+'px';
       disc.style.marginLeft=(-d/2).toFixed(1)+'px';
@@ -538,10 +542,9 @@ body{
       c.style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-d/2).toFixed(1)+'px,0)';
       c.style.opacity=op.toFixed(3);
       c.style.zIndex=Math.round(co*100)+200;
-      c.style.pointerEvents=op>0.06?'auto':'none';
+      c.style.pointerEvents=op>0.08?'auto':'none';
       c.classList.remove('front');
-      var dA=Math.abs(a-Math.PI/2);
-      if(onArc&&dA<frontD){frontD=dA;frontI=i;}
+      if(ef>0.12 && co>frontD){frontD=co;frontI=i;}
     });
     if(frontI>=0){var fc=HUB_PAGES[frontI].el;fc.classList.add('front');fc.style.zIndex=320;curFront=frontI;}
     hubRAF=requestAnimationFrame(renderHub);
