@@ -135,10 +135,15 @@ body{
     transform:rotate(90deg);transform-origin:left top}
 }
 
-/* ===== 页面选择枢纽：深空星野（参考：黑底星点 + 弧上月群 + 大月 + 叠句文字）===== */
+/* ===== 页面选择枢纽：以参考图作底图（黑空月群），交互层叠加其上 ===== */
 #hub{position:fixed;inset:0;z-index:175;overflow:hidden;touch-action:none;
-  background:radial-gradient(120% 100% at 46% 34%,#191919 0%,#101010 55%,#060606 100%);
+  background:#060606 url('hub-bg.jpg') no-repeat right bottom / cover;
   opacity:0;visibility:hidden;pointer-events:none;transition:opacity .8s ease,visibility .8s}
+/* 底图上压一层轻暗角，保证 UI 可读 */
+#hub::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(180deg,rgba(0,0,0,.38) 0%,rgba(0,0,0,.08) 42%,rgba(0,0,0,.30) 100%)}
+/* 底图已含月球/星野/环/弧文字/叠句 → 隐藏合成层，仅保留星球卡片与 UI */
+#hub .moon,#hub .orbit,#hub .orbit2,#hub .ringtext,#hub .stars,#hub .rdot,#hub .stack{display:none}
 #hub.open{opacity:1;visibility:visible;pointer-events:auto}
 #hub .hub-head{position:absolute;top:4.5vmin;left:6vmax;text-align:left;pointer-events:none;z-index:4}
 #hub .hub-head .h{font-family:var(--serif);font-weight:500;font-size:clamp(20px,3.2vmax,32px);letter-spacing:.08em;color:#efefec;
@@ -491,13 +496,9 @@ body{
     if(!lastT)lastT=ts; else rot+=HUB_ROT*(ts-lastT)/1000;
     lastT=ts;
     var W=VW(),H=VH();
-    /* 大月球栖于右下角，月心在屏外 → 仅半轮（约）露出 */
-    var mcx=W*0.94, mcy=H*1.04;
-    var Rm=Math.min(W*0.66,H*0.58);
-    var Rr=Rm*1.12, Rr2=Rr*1.30;
-    var moon=hubEl.querySelector('.moon');
-    if(moon){var d=Rm*2;moon.style.width=d+'px';moon.style.height=d+'px';
-      moon.style.left=(mcx-Rm)+'px';moon.style.top=(mcy-Rm)+'px';}
+    /* 轨道几何对齐底图：月心约在右下屏外(0.887W,1.43H)，星球沿大弧横贯左上屏内 */
+    var mcx=W*0.887, mcy=H*1.43;
+    var Rr=Math.min(W,H)*1.11, Rr2=Rr*1.30;
     var orbit=hubEl.querySelector('.orbit');
     if(orbit){var od=Rr*2;orbit.style.width=od+'px';orbit.style.height=od+'px';
       orbit.style.left=(mcx-Rr)+'px';orbit.style.top=(mcy-Rr)+'px';}
@@ -520,7 +521,7 @@ body{
     var n=HUB_PAGES.length, frontI=-1, frontD=1e9;
     var a0=Math.atan2(H*0.5-mcy, W*0.5-mcx);
     HUB_PAGES.forEach(function(p,i){
-      var a=((Math.PI/2 - i*(2*Math.PI/n))+rot)%(2*Math.PI); if(a<0)a+=2*Math.PI;
+      var a=((Math.PI/2 - i*(2*Math.PI/n))+rot-0.87)%(2*Math.PI); if(a<0)a+=2*Math.PI;
       var ca=Math.cos(a);
       var x=mcx+Rr*Math.cos(a);
       var y=mcy+Rr*Math.sin(a);
