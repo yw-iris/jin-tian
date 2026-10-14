@@ -36,58 +36,8 @@ body{
 #vignette{position:fixed;inset:0;z-index:59;pointer-events:none;
   background:radial-gradient(120% 95% at 50% 42%,transparent 55%,rgba(60,54,44,.16) 100%)}
 
-/* ===== 开场 ===== */
-#intro{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;cursor:pointer;
-  background:radial-gradient(130% 100% at 50% 36%,var(--paper) 0%,var(--paper2) 62%,var(--paper-edge) 100%);
-  transition:opacity 1.1s ease}
-#intro.done{opacity:0;pointer-events:none}
-.intro-tree{width:clamp(84px,18vmin,150px);height:clamp(100px,22vmin,180px);opacity:.85}
-.intro-tree .br{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;
-  stroke-dasharray:520;stroke-dashoffset:520;animation:grow 1.8s cubic-bezier(.3,.7,.3,1) forwards}
-.intro-tree .br:nth-child(2){animation-delay:.16s}
-.intro-tree .br:nth-child(3){animation-delay:.28s}
-.intro-tree .br:nth-child(4){animation-delay:.40s}
-.intro-tree .br:nth-child(5){animation-delay:.52s}
-.intro-tree .br:nth-child(6){animation-delay:.64s}
-.intro-tree .br:nth-child(7){animation-delay:.76s}
-.intro-tree .br:nth-child(8){animation-delay:.88s}
-.intro-tree .cap{fill:var(--ink);opacity:0;animation:capin 1s ease 1.7s forwards}
-@keyframes grow{to{stroke-dashoffset:0}}
-@keyframes capin{to{opacity:.55}}
-.intro-title{margin-top:30px;font-weight:500;font-size:clamp(30px,7vw,66px);
-  letter-spacing:.08em;color:var(--ink);opacity:0;transform:translateY(14px);
-  animation:rise 1.3s ease 1.4s forwards}
-.intro-sub{margin-top:14px;font-family:var(--mono);text-transform:uppercase;
-  letter-spacing:.4em;font-size:clamp(11px,2.4vw,15px);color:var(--dim);opacity:0;
-  filter:blur(6px);animation:subclear 1.3s ease 2.1s forwards}
-.intro-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
-  font-family:var(--mono);letter-spacing:.3em;font-size:11px;color:var(--faint);opacity:0;
-  text-transform:uppercase;animation:hintfade 2.6s ease-in-out 2.8s infinite}
-@keyframes rise{to{opacity:1;transform:none}}
-@keyframes subclear{to{opacity:.7;filter:blur(0)}}
-@keyframes hintfade{0%,100%{opacity:.2}50%{opacity:.6}}
-@media(prefers-reduced-motion:reduce){
-  .intro-tree .br{stroke-dashoffset:0;animation:none}
-  .intro-tree .cap,.intro-title,.intro-sub,.intro-hint{opacity:.7;transform:none;filter:none;animation:none}
-}
-
-/* ===== 索引（极简）===== */
-#index{position:fixed;inset:0;z-index:180;display:none;align-items:center;justify-content:center;
-  background:rgba(225,220,212,.92);backdrop-filter:blur(2px)}
-#index.open{display:flex}
-#index .rail{display:flex;gap:clamp(14px,3vw,30px);flex-wrap:wrap;justify-content:center;
-  max-width:680px;padding:24px}
-#index .ent{cursor:pointer;text-align:center;width:clamp(72px,16vw,108px);
-  opacity:.8;transition:opacity .3s,transform .3s}
-#index .ent:hover{opacity:1;transform:translateY(-3px)}
-#index .ent .num{font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--dim)}
-#index .ent .zh{font-family:var(--serif);font-size:clamp(17px,4vw,22px);letter-spacing:.14em;margin-top:8px;color:var(--ink)}
-#index .ent .en{font-family:var(--mono);font-size:9px;letter-spacing:.28em;color:var(--faint);text-transform:uppercase;margin-top:5px}
-#index .ent .swatch{width:100%;height:3px;margin-top:10px;background:var(--sw,var(--acc));opacity:.85}
-
 /* ===== Deck：全屏逐屏海报 ===== */
-#deck{position:fixed;inset:0;z-index:2;background:var(--paper)}
+#deck{position:fixed;inset:0;z-index:5;background:var(--paper)}
 .poster{position:absolute;inset:0;opacity:0;pointer-events:none;
   transition:opacity .8s ease;overflow:auto}
 .poster.active{opacity:1;pointer-events:auto}
@@ -156,20 +106,77 @@ body{
   color:var(--acc);opacity:.85}
 .p-end .copy{bottom:12%;left:12%}
 
-/* 顶部返回 + 底部索引点 */
+/* 页内返回 + 提示（Hub 进入海报后显示） */
 .back{position:fixed;top:16px;left:16px;z-index:120;font-family:var(--mono);letter-spacing:.22em;
   font-size:11px;color:var(--ink);opacity:.5;cursor:pointer;display:none;
   border:1px solid rgba(60,54,44,.28);padding:8px 14px;border-radius:30px;background:rgba(232,228,220,.5);backdrop-filter:blur(3px)}
 .back.show{display:block}
-.dots{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:120;display:flex;
-  gap:14px;opacity:0;transition:opacity .6s}
-.dots.show{opacity:.9}
-.dot{width:7px;height:7px;border-radius:50%;border:1px solid rgba(60,54,44,.5);cursor:pointer;
-  transition:background .3s,transform .3s}
-.dot.on{background:var(--ink);transform:scale(1.25)}
-.dot:hover{background:rgba(60,54,44,.4)}
+.phint{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:120;
+  font-family:var(--mono);letter-spacing:.24em;font-size:10.5px;color:var(--faint);
+  text-transform:uppercase;opacity:0;transition:opacity .6s;pointer-events:none}
+.phint.show{opacity:.8}
+
+/* ===== 开场动画：纸色碎片散落 → 弧带 → 圆环自转 → 中心标题 ===== */
+#intro{position:fixed;inset:0;z-index:200;overflow:hidden;
+  background:radial-gradient(120% 100% at 50% 42%,var(--paper) 0%,var(--paper-edge) 80%)}
+#intro.done{opacity:0;pointer-events:none;transition:opacity 1.1s ease}
+#intro .frag{position:absolute;left:0;top:0;opacity:0;will-change:transform,opacity;transform-origin:center;
+  border:1px solid rgba(60,54,44,.16);
+  box-shadow:0 8px 28px rgba(40,34,26,.22),inset 0 0 14px rgba(40,34,26,.1)}
+#intro-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.94);text-align:center;opacity:0;pointer-events:none;z-index:2;
+  transition:opacity 1.5s ease,transform 1.5s cubic-bezier(.16,1,.3,1)}
+#intro.on-title #intro-title{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#intro-title .t{font-family:var(--serif);font-weight:500;font-size:clamp(30px,7vw,62px);letter-spacing:.08em;color:var(--ink);
+  text-shadow:0 2px 18px rgba(40,34,26,.35)}
+#intro-title .rule{width:120px;height:1px;margin:18px auto 14px;background:linear-gradient(90deg,transparent,rgba(111,127,149,.7),transparent)}
+#intro-title .s{font-family:var(--mono);font-size:11px;letter-spacing:.4em;text-indent:.4em;color:var(--dim);text-transform:uppercase}
+#intro .skip-hint{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--faint);opacity:0;transition:opacity 1.2s ease .6s;pointer-events:none}
+#intro.on-title .skip-hint{opacity:1}
+
+/* ===== 半圆页面选择枢纽：开场结束后进入 ===== */
+#hub{position:fixed;inset:0;z-index:175;overflow:hidden;touch-action:none;
+  background:radial-gradient(120% 100% at 50% 38%,var(--paper) 0%,var(--paper-edge) 80%);
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .8s ease,visibility .8s}
+#hub.open{opacity:1;visibility:visible;pointer-events:auto}
+#hub .hub-head{position:absolute;top:3.6vh;left:0;right:0;text-align:center;pointer-events:none;z-index:4}
+#hub .hub-head .h{font-family:var(--serif);font-weight:500;font-size:clamp(20px,3.2vw,32px);letter-spacing:.08em;color:var(--ink);
+  text-shadow:0 2px 16px rgba(40,34,26,.3)}
+#hub .hub-head .rule{width:90px;height:1px;margin:13px auto 11px;background:linear-gradient(90deg,transparent,rgba(111,127,149,.6),transparent)}
+#hub .hub-head .s{font-family:var(--mono);font-size:10px;letter-spacing:.32em;color:var(--dim);text-transform:uppercase}
+#hub .stage{position:absolute;inset:0}
+#hub .hub-arc{position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:min(150vmin,118vw);height:calc(min(150vmin,118vw)/2);
+  border:1px solid rgba(60,54,44,.12);border-bottom:none;border-radius:50% 50% 0 0;
+  pointer-events:none;box-shadow:inset 0 0 70px rgba(40,34,26,.05)}
+#hub .hub-arc::after{content:"";position:absolute;left:50%;bottom:-1px;transform:translateX(-50%);width:92%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(111,127,149,.3),transparent)}
+#hub .card{position:absolute;left:0;top:0;width:148px;height:196px;border-radius:2px;overflow:hidden;cursor:pointer;
+  border:1px solid rgba(60,54,44,.26);background:linear-gradient(165deg,var(--paper) 0%,var(--paper-edge) 100%);
+  box-shadow:0 10px 30px rgba(40,34,26,.25),inset 0 0 18px rgba(40,34,26,.1);
+  transition:border-color .4s ease,box-shadow .4s ease;
+  will-change:transform,opacity}
+#hub .card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(233,229,221,.04) 30%,rgba(207,201,189,.78) 100%)}
+#hub .card .thumb{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+#hub .card .thumb svg{width:54%;height:auto;opacity:.82}
+#hub .card .thumb .glyph{font-family:var(--serif);font-weight:500;font-size:52px;color:var(--acc);text-shadow:0 0 18px rgba(194,204,213,.4)}
+#hub .card .enter{position:absolute;top:11px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--dim);opacity:0;transition:opacity .4s;text-transform:uppercase}
+#hub .card .lab{position:absolute;left:0;right:0;bottom:30px;text-align:center;font-family:var(--serif);font-weight:500;font-size:18px;letter-spacing:.14em;color:var(--ink);text-shadow:0 1px 8px rgba(233,229,221,.9);transition:color .4s,text-shadow .4s}
+#hub .card .en{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.3em;color:var(--faint);text-transform:uppercase}
+#hub .card.front{border-color:var(--acc);box-shadow:0 0 36px var(--acc),0 16px 40px rgba(40,34,26,.3)}
+#hub .card.front .lab{color:var(--ink)}
+#hub .card.front .enter{opacity:1}
+#hub .hub-tip{position:absolute;bottom:5.5vh;left:0;right:0;text-align:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;color:var(--faint);pointer-events:none;z-index:4}
+@media (max-width:680px){
+  #hub .card{width:116px;height:154px;}
+  #hub .card .thumb svg{width:50%}
+  #hub .card .lab{font-size:15px;bottom:26px;}
+  #hub .card .en{bottom:12px;}
+  #hub .card .thumb .glyph{font-size:42px}
+}
+
 @media(prefers-reduced-motion:reduce){
-  .poster,.back,.dots,#intro{transition:none}
+  .poster,#intro,#hub,.back,.phint{transition:none}
+  #intro .frag{display:none}
 }
 </style>
 </head>
@@ -228,22 +235,27 @@ body{
 <svg id="grain" xmlns="http://www.w3.org/2000/svg"><filter id="gf"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#gf)"/></svg>
 <div id="vignette"></div>
 
-<!-- 开场 -->
-<div id="intro">
-  <svg class="intro-tree" viewBox="0 0 200 240"><use href="#tree"/></svg>
-  <div class="intro-title">今天 · 明天 · 后天</div>
-  <div class="intro-sub">What sets them apart</div>
-  <div class="intro-hint">轻触任意处 · 进入</div>
+<!-- 开场动画：纸色碎片散落 → 圆环自转 → 中心标题 -->
+<div id="intro" aria-hidden="true">
+  <div id="intro-title">
+    <div class="t">今天 · 明天 · 后天</div>
+    <div class="rule"></div>
+    <div class="s">What sets them apart</div>
+  </div>
+  <div class="skip-hint">轻触任意处进入</div>
 </div>
 
-<!-- 索引 -->
-<div id="index">
-  <div class="rail">
-    <div class="ent" data-i="0" style="--sw:#dfe8ef"><div class="num">00</div><div class="zh">封面</div><div class="en">Cover</div><div class="swatch"></div></div>
-    <div class="ent" data-i="1" style="--sw:#6f7f95"><div class="num">01</div><div class="zh">瘾症</div><div class="en">Persona</div><div class="swatch"></div></div>
-    <div class="ent" data-i="2" style="--sw:#b4bdc6"><div class="num">02</div><div class="zh">须知</div><div class="en">Notice</div><div class="swatch"></div></div>
-    <div class="ent" data-i="3" style="--sw:#c2ccd5"><div class="num">03</div><div class="zh">尾声</div><div class="en">End</div><div class="swatch"></div></div>
+<!-- 半圆页面选择枢纽：开场结束后进入，半圆一直旋转，轻触卡片进入 -->
+<div id="hub" aria-hidden="true">
+  <div class="hub-head">
+    <div class="h">今天 · 明天 · 后天</div>
+    <div class="rule"></div>
+    <div class="s">Choose a Chapter · 轻触卡片进入</div>
   </div>
+  <div class="stage">
+    <div class="hub-arc"></div>
+  </div>
+  <div class="hub-tip">上下滚动 / 滚轮 转动半圆 · 轻触卡片进入 · 再轻触页面返回</div>
 </div>
 
 <!-- Deck -->
@@ -328,83 +340,198 @@ body{
 
 </div>
 
-<div class="back" id="back">‹ 索引</div>
-<div class="dots" id="dots">
-  <div class="dot" data-i="0"></div><div class="dot" data-i="1"></div>
-  <div class="dot" data-i="2"></div><div class="dot" data-i="3"></div>
-</div>
+<div class="back" id="back">‹ 选择</div>
+<div class="phint" id="phint">轻触任意处 · 返回选择</div>
 
 <script>
 (function(){
   'use strict';
   var REDUCE=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
 
+  /* ===== 章节数据（Hub 卡片）===== */
+  var HUB_PAGES=[
+    {id:'cover',  zh:'封面', en:'COVER',   acc:'#dfe8ef', svg:'tree'},
+    {id:'persona',zh:'瘾症', en:'PERSONA', acc:'#6f7f95', svg:'branch'},
+    {id:'notice', zh:'须知', en:'NOTICE',  acc:'#b4bdc6', svg:'glyph', glyph:'知'},
+    {id:'ending', zh:'尾声', en:'ENDING',  acc:'#c2ccd5', svg:'flake'}
+  ];
+
+  /* ===== 海报逐屏显示 ===== */
   var posters=[].slice.call(document.querySelectorAll('.poster'));
-  var N=posters.length;
-  var cur=0,started=false,indexOpen=false;
-  var intro=document.getElementById('intro');
-  var indexEl=document.getElementById('index');
+  var N=posters.length, cur=0;
+  var introEl=document.getElementById('intro');
+  var hubEl=document.getElementById('hub');
   var back=document.getElementById('back');
-  var dotsWrap=document.getElementById('dots');
-  var dots=[].slice.call(dotsWrap.querySelectorAll('.dot'));
+  var phint=document.getElementById('phint');
 
   function show(i){
     i=((i%N)+N)%N;
     posters.forEach(function(p,k){p.classList.toggle('active',k===i);});
     cur=i;
-    back.classList.toggle('show',i!==0);
-    dots.forEach(function(d,k){d.classList.toggle('on',k===i);});
   }
-  function openIndex(){indexOpen=true;indexEl.classList.add('open');}
-  function closeIndex(){indexOpen=false;indexEl.classList.remove('open');}
 
-  /* 索引点 / 返回 / 条目 */
-  dots.forEach(function(d){d.addEventListener('click',function(){closeIndex();show(+d.dataset.i);});});
-  back.addEventListener('click',openIndex);
-  [].slice.call(indexEl.querySelectorAll('.ent')).forEach(function(e){
-    e.addEventListener('click',function(){closeIndex();show(+e.dataset.i);});
-  });
+  /* ===== 半圆枢纽：开场结束后进入，滚动/自转 ===== */
+  var hubOpen=false,fromHub=false,rot=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false;
+  var HUB_ROT=REDUCE?0:0.16; // 半圆自转角速度 rad/s
+  function buildHub(){
+    var stage=hubEl.querySelector('.stage');
+    HUB_PAGES.forEach(function(p,i){
+      var c=document.createElement('div');c.className='card';c.dataset.i=i;
+      c.style.setProperty('--acc',p.acc);
+      var thumb='';
+      if(p.svg==='tree') thumb='<svg viewBox="0 0 200 240"><use href="#tree"/></svg>';
+      else if(p.svg==='branch') thumb='<svg viewBox="0 0 120 120" style="color:'+p.acc+'"><use href="#branch"/></svg>';
+      else if(p.svg==='flake') thumb='<svg viewBox="0 0 100 100" style="color:'+p.acc+'"><use href="#flake"/></svg>';
+      else thumb='<div class="glyph">'+p.glyph+'</div>';
+      c.innerHTML='<div class="scrim"></div><div class="enter">ENTER ›</div><div class="thumb">'+thumb+'</div><div class="lab">'+p.zh+'</div><div class="en">'+p.en+'</div>';
+      c.addEventListener('click',function(){ if(hubDragged){hubDragged=false;return;} enterHub(i); });
+      stage.appendChild(c); p.el=c;
+    });
+    hubEl.addEventListener('wheel',function(e){e.preventDefault();rot+=e.deltaY*0.0016;},{passive:false});
+    var lastY=null;
+    hubEl.addEventListener('pointerdown',function(e){lastY=e.clientY;hubDragged=false;});
+    hubEl.addEventListener('pointermove',function(e){ if(lastY!==null){var d=lastY-e.clientY;rot+=d*0.004;if(Math.abs(d)>8)hubDragged=true;lastY=e.clientY;} },{passive:false});
+    hubEl.addEventListener('pointerup',function(){lastY=null;});
+    addEventListener('keydown',function(e){
+      if(!hubOpen)return;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown'){rot+=0.5;e.preventDefault();}
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){rot-=0.5;e.preventDefault();}
+      else if(e.key==='Enter'||e.key===' '){enterHub(curFront);e.preventDefault();}
+    });
+  }
+  function renderHub(ts){
+    if(!hubOpen){hubRAF=null;return;}
+    if(!lastT)lastT=ts; else rot+=HUB_ROT*(ts-lastT)/1000;
+    lastT=ts;
+    var cx=innerWidth/2, cy=innerHeight*0.97;
+    var R=Math.min(innerHeight*0.62,innerWidth*0.6);
+    var n=HUB_PAGES.length, frontI=-1, frontD=1e9;
+    HUB_PAGES.forEach(function(p,i){
+      var a=((Math.PI - i*(2*Math.PI/n))+rot)%(2*Math.PI); if(a<0)a+=2*Math.PI;
+      var s=Math.sin(a);
+      var x=cx+R*Math.cos(a), y=cy-R*s;
+      var c=p.el;
+      var onArc=a<=Math.PI+0.02;
+      var sc=0.46+0.6*Math.max(0,s);
+      var op=onArc?(0.3+0.7*Math.max(0,s)):0;
+      var cw=c.offsetWidth||148, chh=c.offsetHeight||196;
+      c.style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-chh/2).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';
+      c.style.opacity=op.toFixed(3);
+      c.style.zIndex=Math.round(s*100)+100;
+      c.classList.remove('front');
+      var d=Math.abs(a-Math.PI/2);
+      if(onArc&&d<frontD){frontD=d;frontI=i;}
+    });
+    if(frontI>=0){var fc=HUB_PAGES[frontI].el;fc.classList.add('front');fc.style.zIndex=300;curFront=frontI;}
+    hubRAF=requestAnimationFrame(renderHub);
+  }
+  function openHub(){
+    if(!hubEl.__built){buildHub();hubEl.__built=true;}
+    hubOpen=true; fromHub=false; hubEl.classList.add('open');
+    back.classList.remove('show'); phint.classList.remove('show');
+    if(!hubRAF){lastT=0; hubRAF=requestAnimationFrame(renderHub);}
+  }
+  function returnToHub(){ fromHub=false; openHub(); }
+  function enterHub(i){
+    if(!hubOpen)return;
+    if(i===undefined)i=curFront;
+    hubOpen=false;
+    hubEl.classList.remove('open');
+    if(hubRAF){cancelAnimationFrame(hubRAF);hubRAF=null;}
+    show(i); fromHub=true;
+    back.classList.add('show'); phint.classList.add('show');
+  }
 
-  /* 轻点任意处：封面→索引；其余→下一屏 */
+  /* ===== 页内点击：从 Hub 进入后轻点任意处返回 Hub ===== */
   var pX=0,pY=0,pT=0;
-  function isUI(t){return t.closest&&t.closest('.back,.dots,#index');}
+  function isUI(t){return t.closest&&t.closest('.back');}
   document.getElementById('deck').addEventListener('pointerdown',function(e){pX=e.clientX;pY=e.clientY;pT=Date.now();},{passive:true});
   document.getElementById('deck').addEventListener('pointerup',function(e){
-    if(indexOpen)return;
+    if(hubOpen)return;
     var dx=e.clientX-pX,dy=e.clientY-pY,dt=Date.now()-pT;
     if(Math.hypot(dx,dy)<14&&dt<600&&!isUI(e.target)){
-      if(cur===0)openIndex();else show(cur+1);
+      if(fromHub){ returnToHub(); }
+      else { show(cur+1); }
     }
   },{passive:true});
-
-  /* 滚轮 */
-  document.getElementById('deck').addEventListener('wheel',function(e){
-    if(indexOpen)return;
-    if(e.deltaY>12)show(cur+1);else if(e.deltaY<-12)show(cur-1);
-  },{passive:true});
-
-  /* 键盘 */
+  back.addEventListener('click',returnToHub);
   addEventListener('keydown',function(e){
-    if(!started)return;
-    if(e.key==='Escape'){closeIndex();return;}
-    if(indexOpen){if(e.key==='Enter'||e.key===' '){closeIndex();e.preventDefault();}return;}
-    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){if(cur===0)openIndex();else show(cur+1);e.preventDefault();}
+    if(hubOpen||!fromHub)return;
+    if(e.key==='Escape'){returnToHub();return;}
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){show(cur+1);e.preventDefault();}
     else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){show(cur-1);e.preventDefault();}
-    else if(e.key==='Enter'){openIndex();e.preventDefault();}
   });
 
-  /* 开场 */
-  function finish(){
-    if(started)return;started=true;
-    intro.classList.add('done');
-    setTimeout(function(){intro.style.display='none';},1100);
-    dotsWrap.classList.add('show');
-    show(0);
-  }
-  intro.addEventListener('click',finish);
-  intro.addEventListener('touchend',finish,{passive:true});
-  if(REDUCE){intro.style.display='none';started=true;dotsWrap.classList.add('show');show(0);}
-  else setTimeout(finish,6000);
+  /* ===== 开场动画：纸色碎片散落 → 弧带 → 圆环自转 → 中心标题 ===== */
+  (function(){
+    if(!introEl)return;
+    if(REDUCE){introEl.remove();openHub();return;}
+    var MOBILE=innerWidth<680;
+    var N2=MOBILE?12:18;
+    var lerp=function(a,b,k){return a+(b-a)*k;};
+    var ease=function(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+    var CX=function(){return innerWidth/2;}, CY=function(){return innerHeight/2;};
+    var R=Math.min(innerWidth,innerHeight)*(MOBILE?0.31:0.30);
+    var PAPERS=['#e9e5dd','#ddd8ce','#cfc9bd','#d8d2c6'];
+    var items=[];
+    for(var i=0;i<N2;i++){
+      var el=document.createElement('div');el.className='frag';
+      var w=Math.random()*(MOBILE?18:30)+(MOBILE?48:66);
+      el.style.width=w.toFixed(1)+'px';
+      el.style.height=(w*1.32).toFixed(1)+'px';
+      el.style.background='linear-gradient(135deg,'+PAPERS[i%PAPERS.length]+' 0%,#cfc9bd 100%)';
+      introEl.appendChild(el);
+      var slot=i/N2*Math.PI*2+Math.random()*0.12;
+      items.push({el:el,w:w,
+        sx:(Math.random()*0.78+0.11)*innerWidth, sy:(Math.random()*0.66+0.17)*innerHeight,
+        sr:(Math.random()-0.5)*56, ss:Math.random()*0.3+(MOBILE?0.5:0.55),
+        ax:((i/(N2-1))-0.5)*innerWidth*0.82, ay:CY()+Math.pow((i/(N2-1))-0.5,2)*innerHeight*0.2,
+        ar:(Math.random()-0.5)*16, as:MOBILE?0.66:0.72,
+        slot:slot, rr:R*(0.95+Math.random()*0.1), cs:Math.random()*0.1+(MOBILE?0.56:0.62)});
+    }
+    var W0=0.2; // 圆环自转角速度 rad/s
+    var start=null,skipped=false;
+    function frame(ts){
+      if(start===null)start=ts;
+      var t=(ts-start)/1000, cx=CX(), cy=CY();
+      for(var k=0;k<items.length;k++){
+        var f=items[k];
+        var x,y,rot2,sc,op;
+        if(t<1.5){
+          var kk=ease((t-0.12)/1.38);
+          x=lerp(f.sx,f.ax+cx,kk); y=lerp(f.sy,f.ay,kk);
+          rot2=lerp(f.sr,f.ar,kk); sc=lerp(f.ss,f.as,kk);
+          op=Math.min(1,t/0.75)*0.92;
+        }else if(t<3.0){
+          var k2=ease((t-1.5)/1.5), ph=f.slot;
+          x=lerp(f.ax+cx,cx+Math.cos(ph)*f.rr,k2);
+          y=lerp(f.ay,cy+Math.sin(ph)*f.rr,k2);
+          rot2=lerp(f.ar,ph*180/Math.PI+90,k2); sc=lerp(f.as,f.cs,k2);
+          op=0.92;
+        }else{
+          var ph2=f.slot+W0*(t-3.0);
+          x=cx+Math.cos(ph2)*f.rr; y=cy+Math.sin(ph2)*f.rr;
+          rot2=ph2*180/Math.PI+90; sc=f.cs; op=0.92;
+        }
+        f.el.style.opacity=op.toFixed(3);
+        f.el.style.transform='translate3d('+(x-f.w/2).toFixed(1)+'px,'+(y-f.w/2).toFixed(1)+'px,0) rotate('+rot2.toFixed(2)+'deg) scale('+sc.toFixed(3)+')';
+      }
+      if(t>=3.4)introEl.classList.add('on-title');
+      if(skipped)return;
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    function skip(){
+      if(skipped)return;skipped=true;
+      introEl.classList.add('done');
+      setTimeout(function(){introEl.style.display='none';},1200);
+      openHub();
+    }
+    introEl.addEventListener('click',skip);
+    introEl.addEventListener('touchend',skip,{passive:true});
+  })();
+
+  show(0);
 })();
 </script>
 </body>
