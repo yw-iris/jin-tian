@@ -188,6 +188,27 @@ body{
   text-transform:uppercase;opacity:0;transition:opacity .6s;pointer-events:none}
 .phint.show{opacity:.8}
 
+/* ===== BGM 开关（右下角，深色半透明胶囊 + 声波动画）===== */
+.bgm-btn{position:fixed;right:18px;bottom:18px;z-index:220;display:flex;align-items:center;gap:9px;
+  padding:9px 15px 9px 12px;border-radius:999px;cursor:pointer;
+  background:rgba(14,16,22,.55);border:1px solid rgba(236,236,234,.30);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  color:#ececea;opacity:0;pointer-events:none;transform:translateY(8px);
+  transition:opacity .6s ease,transform .6s ease,background .3s ease;
+  -webkit-tap-highlight-color:transparent}
+.bgm-btn.show{opacity:1;pointer-events:auto;transform:none}
+.bgm-btn:hover{background:rgba(14,16,22,.8)}
+.bgm-btn svg{width:15px;height:15px;flex:0 0 auto;opacity:.9}
+.bgm-btn .ic-wave{display:flex;align-items:flex-end;gap:2.5px;height:13px}
+.bgm-btn .ic-wave i{width:2px;height:4px;background:currentColor;border-radius:1px;opacity:.8}
+.bgm-btn.on .ic-wave i{animation:bgmwave 1s ease-in-out infinite}
+.bgm-btn.on .ic-wave i:nth-child(1){animation-delay:0s}
+.bgm-btn.on .ic-wave i:nth-child(2){animation-delay:.18s}
+.bgm-btn.on .ic-wave i:nth-child(3){animation-delay:.36s}
+.bgm-btn.on .ic-wave i:nth-child(4){animation-delay:.54s}
+@keyframes bgmwave{0%,100%{height:4px}50%{height:12px}}
+@media (max-width:680px){ .bgm-btn{right:12px;bottom:12px;padding:8px 13px 8px 10px} }
+
 /* ===== 手机竖屏 → 强制横屏呈现（整体旋转 90°）===== */
 @media (orientation:portrait) and (pointer:coarse) and (max-width:820px){
   body{position:relative;left:100vw;top:0;width:100vh;height:100vw;
@@ -345,10 +366,18 @@ body{
 @media(prefers-reduced-motion:reduce){
   .poster,#hub,.back,.phint{transition:none}
   #hub .ringtext,#hub .moon .moon-surface{animation:none}
+  .bgm-btn.on .ic-wave i{animation:none;height:7px}
 }
 </style>
 </head>
 <body>
+
+<!-- BGM：intro 轻触进入时以用户手势启动（浏览器自动播放策略），可随时右下角开关 -->
+<audio id="bgm" src="bgm.m4a" loop preload="auto"></audio>
+<button id="bgmBtn" class="bgm-btn" type="button" aria-label="播放音乐" aria-pressed="false">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18.4a2.4 2.4 0 1 1-2.4-2.4c.53 0 1.01.17 1.41.45V6.3l8.6-2.1v8.9a2.4 2.4 0 1 1-1.44-2.2V6.06L9 7.55v10.85z" fill="currentColor"/></svg>
+  <span class="ic-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+</button>
 
 <!-- 开场：星空封面（轻触进入站点） -->
 <div id="intro">
@@ -545,10 +574,40 @@ body{
 
   /* ===== 开场：轻触进入站点（按钮或背景均可），淡出后显示 Hub ===== */
   var intro=document.getElementById('intro');
+  /* ===== BGM：轻触进入时启动（点击手势内 play，符合浏览器自动播放策略）===== */
+  var bgm=document.getElementById('bgm');
+  var bgmBtn=document.getElementById('bgmBtn');
+  function bgmSync(on){
+    if(!bgmBtn)return;
+    bgmBtn.classList.toggle('on',!!on);
+    bgmBtn.setAttribute('aria-pressed',on?'true':'false');
+    bgmBtn.setAttribute('aria-label',on?'关闭音乐':'播放音乐');
+  }
+  function bgmStart(){
+    if(bgmBtn)bgmBtn.classList.add('show');
+    if(!bgm)return;
+    try{
+      bgm.volume=0.5;
+      var pr=bgm.play();
+      if(pr&&pr.then)pr.then(function(){bgmSync(true);}).catch(function(){bgmSync(false);});
+      else bgmSync(true);
+    }catch(e){ bgmSync(false); }
+  }
+  function bgmToggle(){
+    if(!bgm)return;
+    if(bgm.paused){
+      bgm.volume=0.5;
+      var pr=bgm.play();
+      if(pr&&pr.then)pr.then(function(){bgmSync(true);}).catch(function(){});
+      else bgmSync(true);
+    } else { bgm.pause(); bgmSync(false); }
+  }
+  if(bgmBtn)bgmBtn.addEventListener('click',function(e){e.stopPropagation();bgmToggle();});
   function enterSite(){
     if(!intro||intro.classList.contains('done'))return;
     intro.classList.add('done');
     setTimeout(function(){intro.style.display='none';},850);
+    bgmStart();
   }
   var enterBtn=document.getElementById('introEnter');
   if(enterBtn)enterBtn.addEventListener('click',function(e){e.stopPropagation();enterSite();});
