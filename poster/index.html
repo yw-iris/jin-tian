@@ -46,7 +46,9 @@ body{
   display:flex;align-items:center;justify-content:center;
   transition:opacity .8s ease,visibility .8s}
 #intro .intro-bg{position:absolute;inset:0;background:var(--intro) center/contain no-repeat}
-#intro .intro-cta{position:relative;z-index:2;margin-top:64vh;
+#intro::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(4,5,10,.30) 0%,rgba(4,5,10,0) 32%,rgba(4,5,10,.58) 100%)}
+#intro .intro-cta{position:absolute;left:0;right:0;bottom:25%;z-index:2;
   display:flex;flex-direction:column;align-items:center;gap:20px}
 #intro .intro-line{font-family:var(--serif);font-weight:300;font-size:clamp(14px,2.4vmin,19px);
   letter-spacing:.34em;text-indent:.34em;color:#eceae6;text-shadow:0 2px 18px rgba(0,0,0,.75)}
@@ -257,6 +259,12 @@ body{
   .p-end .flake2{top:8%;right:7%;width:clamp(16px,4vmin,26px)}
   .p-end .title{font-size:clamp(18px,4.6vmin,30px)!important}
   .p-end .copy{bottom:7%;left:6%}
+
+  /* 开场：底图 cover 铺满手机横屏（去黑边），CTA 上移适应扁屏 */
+  #intro .intro-bg{background-size:cover;background-position:center}
+  #intro .intro-cta{bottom:15%;gap:16px}
+  #intro .intro-line{font-size:clamp(13px,2vmin,17px)}
+  #intro .intro-enter{padding:10px 26px 10px 30px;font-size:13px}
 
   /* 手机横屏：装饰图按比例缩小，避免遮挡横排正文 */
   .deco{opacity:.26}
