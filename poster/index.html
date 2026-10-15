@@ -609,16 +609,21 @@ body{
     rot+=HUB_ROT*dt;
     if(rot<=-Math.PI*2)rot+=Math.PI*2; else if(rot>Math.PI*2)rot-=Math.PI*2;
     var W=VW(),H=VH();
-    /* 旋转轴线 = 参考图右下角大半月的圆心（底图锚定 right bottom，大月拟合 center(1369,1274) R=918 / 1440x673）。
-       月群绕此圆心公转、沿其上半弧（屏上可见区）流转，与参考图月链一致；弧两端淡出以避免回卷跳变。
+    /* 半圆月环：直径（直边）位于页面下方，弧体向上拱起（手机横屏为主场景）。
+       月群为底图实裁小月（moon1~4.jpg），沿上半弧均布流转，弧两端淡出避免回卷跳变。
        自转/滚轮/拖动/方向键均驱动 rot，沿弧流动。
-       手机横屏：底图放大 ZOOM 倍并保持 right bottom 锚定 —— 原图顶部约 148px 纯黑带被裁出屏外，
-       底图真正铺满视觉横屏；大月圆心按放大后的坐标计算，轨道半径保持独立（不随 ZOOM）以保证弧顶在屏内。 */
-    var IW=1440, IH=673, s0=Math.max(W/IW,H/IH);
-    var K=MOBLAND()?1.42:1, sq=s0*K;
-    var mcx=W-71*sq, mcy=H+601*sq;        /* 大月圆心（随底图放大，屏外右下） */
-    var Rr=1270*s0;                       /* 小月链轨道半径（独立于 ZOOM，保证弧顶在屏内） */
-    var ARC_LO=205*Math.PI/180, ARC_HI=275*Math.PI/180, SPAN=ARC_HI-ARC_LO;
+       手机横屏：底图放大 K 倍并保持 right bottom 锚定 —— 新图顶部约 159px 纯黑带被裁出屏外，
+       底图真正铺满视觉横屏。 */
+    var IW=1366, IH=674, s0=Math.max(W/IW,H/IH);
+    var K=MOBLAND()?1.35:1, sq=s0*K;
+    var mcx=W/2;                          /* 半圆环水平居中 */
+    var mcy=H*1.11;                       /* 圆心在页面下方 → 直径边位于屏外下方 */
+    /* 弧顶避开底图顶部黑带（新图顶部 159 行纯黑）：黑带下缘 = 图顶屏上位置 + 159*sq */
+    var ytop=H-IH*sq;                     /* 底图顶边在屏上的 y（可为负） */
+    var band=Math.max(0,ytop)+159*sq;     /* 黑带下缘 */
+    var arcTop=Math.max(H*0.26, band+14); /* 弧顶 y：不低于 26% 屏高，且在黑带下方 */
+    var Rr=Math.min(mcy-arcTop, W*0.62);  /* 轨道半径：竖屏时收敛保证可见 */
+    var ARC_LO=Math.PI, ARC_HI=Math.PI*2, SPAN=ARC_HI-ARC_LO;   /* 上半圆 180°~360° */
     /* 底图精确尺寸（K=1 时与 CSS cover 完全等价；变化时才写 DOM） */
     var bgs=(IW*sq).toFixed(1)+'px '+(IH*sq).toFixed(1)+'px';
     if(bgs!==hubEl.__bgs){hubEl.style.backgroundSize=bgs;hubEl.style.backgroundPosition='right bottom';hubEl.__bgs=bgs;}
@@ -632,7 +637,7 @@ body{
       var t=(ang-ARC_LO)/SPAN;            /* 0..1 沿弧位置，两端淡出 */
       var ef=Math.max(0,Math.min(1, t/0.16)) * Math.max(0,Math.min(1,(1-t)/0.16));
       var op=(0.34+0.66*co)*ef;
-      var d=Math.max(44, 58*s0*(0.72+0.42*co));
+      var d=Math.max(44, 58*sq*(0.72+0.42*co));
       var c=p.el, disc=c.querySelector('.disc');
       disc.style.width=d.toFixed(1)+'px'; disc.style.height=d.toFixed(1)+'px';
       disc.style.marginLeft=(-d/2).toFixed(1)+'px';
