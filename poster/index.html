@@ -226,46 +226,49 @@ body{
   .poster{box-shadow:none;
     background:radial-gradient(135% 110% at 38% 30%,var(--paper) 0%,var(--paper2) 62%,var(--paper-edge) 100%)}
   .copy{top:6%;left:6%;right:6%;max-width:88%}
-  .doc-tag{font-size:10px;margin-bottom:12px}
-  .hair{margin:12px 0 10px}
-  .title{font-size:clamp(20px,5.2vmin,34px)!important;line-height:1.25}
-  .sub{font-size:clamp(12px,2.6vmin,16px);margin-top:10px}
-  .script{font-size:clamp(13px,2.7vmin,19px);line-height:1.85;margin:10px 0}
-  .micro{font-size:clamp(9px,1.7vmin,11.5px);line-height:1.78;margin-top:9px}
-  .micro li{margin:3px 0;padding-left:28px}
-  .reprise{margin-top:12px;padding-left:12px}
-  .rp-t{font-size:11.5px;margin-bottom:5px}
-  .rp-c{font-size:clamp(9.5px,1.8vmin,12px);line-height:1.7}
-  .sign-off{margin-top:12px;font-size:11px}
+  .doc-tag{font-size:10.5px;margin-bottom:14px}
+  .hair{margin:14px 0 12px}
+  .title{font-size:clamp(21px,5.6vmin,34px)!important;line-height:1.25}
+  .sub{font-size:clamp(13px,2.8vmin,16px);margin-top:10px}
+  .script{font-size:clamp(13.5px,2.8vmin,19px);line-height:1.8;margin:9px 0}
+  .micro{font-size:clamp(9.5px,1.9vmin,11.5px);line-height:1.8;margin-top:10px}
+  .micro li{margin:4px 0;padding-left:29px}
+  .reprise{margin-top:14px;padding-left:14px}
+  .rp-t{font-size:12.5px;margin-bottom:6px}
+  .rp-c{font-size:clamp(10.5px,2vmin,12.5px);line-height:1.75}
+  .sign-off{margin-top:14px;font-size:12px}
 
   /* 封面：标题上左，枯树右下 */
   .p-cover .copy{top:7%;left:6%}
-  .p-cover .title{white-space:nowrap;font-size:clamp(20px,6vmin,40px)!important}
+  .p-cover .title{white-space:nowrap;font-size:clamp(21px,6.8vmin,40px)!important}
   .p-cover .focal{right:6%;bottom:7%;width:clamp(90px,24vmin,170px)}
 
   /* 瘾症：撕纸剪贴右上，文案左下 */
   .p-persona .focal{top:8%;right:6%;width:clamp(90px,22vmin,160px)}
   .p-persona .copy{bottom:7%;left:6%}
-  .p-persona .title{font-size:clamp(20px,5.5vmin,34px)!important}
+  .p-persona .title{font-size:clamp(21px,5.8vmin,34px)!important}
 
   /* 须知：档案微缩文字，分两列避免溢出（扁屏高度有限） */
   .p-notice .copy{top:6%;left:6%;width:auto;right:6%}
   .p-notice .title{font-size:clamp(18px,4.4vmin,28px)!important}
-  .p-notice .micro{columns:2;column-gap:22px;font-size:clamp(8.5px,1.6vmin,10.5px);line-height:1.55;margin-top:8px}
-  .p-notice .micro li{margin:3px 0;padding-left:26px}
-  .p-notice .sig{right:6%;bottom:5%;font-size:10px}
+  .p-notice .micro{columns:2;column-gap:26px;font-size:clamp(9.5px,1.9vmin,11px);line-height:1.62;margin-top:10px}
+  .p-notice .micro li{margin:4px 0;padding-left:28px}
+  .p-notice .sig{right:6%;bottom:5%;font-size:11px}
 
   /* 尾声：地平线低 + 右上小雪花，文案下左 */
   .p-end .focal{left:0;right:0;bottom:32%;height:1px}
   .p-end .flake2{top:8%;right:7%;width:clamp(16px,4vmin,26px)}
-  .p-end .title{font-size:clamp(18px,4.6vmin,30px)!important}
+  .p-end .title{font-size:clamp(19px,4.8vmin,30px)!important}
   .p-end .copy{bottom:7%;left:6%}
+  /* 人设字段行距与外链间距：横屏扁屏下适度透气 */
+  .meta .row{margin:7px 0}
+  .links{gap:8px}
 
   /* 开场：底图 cover 铺满手机横屏（去黑边），CTA 上移适应扁屏 */
   #intro .intro-bg{background-size:cover;background-position:center}
   #intro .intro-cta{bottom:15%;gap:16px}
-  #intro .intro-line{font-size:clamp(13px,2vmin,17px)}
-  #intro .intro-enter{padding:10px 26px 10px 30px;font-size:13px}
+  #intro .intro-line{font-size:clamp(14px,2.2vmin,18px)}
+  #intro .intro-enter{padding:11px 28px 11px 32px;font-size:14px}
 
   /* 手机横屏：装饰图按比例缩小，避免遮挡横排正文 */
   .deco{opacity:.26}
@@ -277,7 +280,7 @@ body{
   .p-end .deco2{width:38vmin}
 
   .back{top:10px;left:10px;font-size:10px;padding:6px 11px}
-  .phint{bottom:10px;font-size:9.5px}
+  .phint{bottom:10px;font-size:10px}
 
   /* 手机横屏：底图由 JS 放大锚定右下（裁掉原图顶部黑带），暗角相应减淡 */
   #hub::before{background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.05) 42%,rgba(0,0,0,.26) 100%)}
