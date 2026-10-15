@@ -342,7 +342,6 @@ body{
   <section class="poster p-cover" data-i="0">
     <div class="focal">
       <div class="glow"></div>
-      <svg viewBox="0 0 200 240"><use href="#tree"/></svg>
     </div>
     <div class="copy">
       <div class="eyebrow">Document · 文档</div>
@@ -355,7 +354,6 @@ body{
   <!-- 1 瘾症 -->
   <section class="poster p-persona" data-i="1">
     <div class="focal">
-      <svg viewBox="0 0 120 120"><use href="#branch" style="color:var(--acc)"/></svg>
     </div>
     <div class="copy">
       <div class="ch-no">// 01 · 瘾症</div>
@@ -404,7 +402,6 @@ body{
       <div class="horizon"></div>
       <div class="sun"></div>
     </div>
-    <svg class="flake2" viewBox="0 0 100 100"><use href="#flake"/></svg>
     <div class="copy">
       <div class="ch-no">// 03 · END</div>
       <div class="eyebrow">Ending</div>
@@ -455,7 +452,7 @@ body{
 
   /* ===== 半圆枢纽：加载即进入，月环持续自转，滚轮/拖动/方向键转动，轻触卡片进入 ===== */
   var hubOpen=false,fromHub=false,rot=0,vel=0,hubRAF=null,lastT=0,curFront=0,hubDragged=false;
-  var HUB_ROT=REDUCE?0:0.16; // 月环自转角速度 rad/s（与 qing-jiu 一致）
+  var HUB_ROT=REDUCE?0:0.10; // 月环自转角速度 rad/s（已调慢：原 0.16）
   function buildHub(){
     var stage=hubEl.querySelector('.stage');
     HUB_PAGES.forEach(function(p,i){
